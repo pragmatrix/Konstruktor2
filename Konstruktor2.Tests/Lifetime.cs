@@ -60,7 +60,7 @@ namespace Konstruktor.Tests
 
 			var b = new Builder();
 
-			b.iface<IB, B>();
+			b.forInterface<IB>().use<B>();
 
 			using (var scope = b.beginScope())
 			{

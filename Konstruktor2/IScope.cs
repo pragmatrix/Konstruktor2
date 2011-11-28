@@ -5,10 +5,11 @@ namespace Konstruktor
 	public interface IScope : IDisposable
 	{
 
-		// Resolve in this scope or parent scopes, create a new instance in this scope if not available yet.
+		// Resolve in this scope or parent scopes, create a new instance in this scope if it is not existing yet.
 		object resolve(Type t);
 
 		// Resolve in this scope: create a new instance that does not exist in this scope (ignoring the ancestor scopes).
+		// Dependencies are resolved by asking ancestor scopes, though.
 		object resolveLocal(Type t);
 		
 		void store<TypeT>(TypeT instance);

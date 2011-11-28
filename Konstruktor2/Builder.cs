@@ -27,15 +27,6 @@ namespace Konstruktor
 			_explicitGenerators.Add(typeof(GeneratedT), scope => constructor(scope));
 		}
 
-		[Obsolete("Use forInterface<>()")]
-		public void iface<InterfaceT, ImplementationT>()
-		{
-			var iType = typeof (InterfaceT);
-			var cType = typeof (ImplementationT);
-			Debug.Assert(iType.IsAssignableFrom(cType));
-			iface(iType, cType);
-		}
-
 		public ForInterface<InterfaceT> forInterface<InterfaceT>()
 			where InterfaceT:class
 		{
@@ -55,11 +46,11 @@ namespace Konstruktor
 			public void use<ImplementationT>()
 				where ImplementationT : InterfaceT
 			{
-				_builder.iface(typeof (InterfaceT), typeof (ImplementationT));
+				_builder.mapInterfaceToImplementation(typeof (InterfaceT), typeof (ImplementationT));
 			}
 		}
 
-		public void iface(Type interfaceType, Type implementationType)
+		public void mapInterfaceToImplementation(Type interfaceType, Type implementationType)
 		{
 #if DEBUG
 			Debug.Assert(!_frozen);
@@ -130,7 +121,7 @@ namespace Konstruktor
 					foreach (var interfaceType in interfaceTypes)
 					{
 						Debug.Assert(interfaceType.IsAssignableFrom(implementationType));
-						iface(interfaceType, implementationType);
+						mapInterfaceToImplementation(interfaceType, implementationType);
 					}
 				}
 			}
@@ -140,7 +131,7 @@ namespace Konstruktor
 		{
 			foreach (var interfaceType in getImmediateInterfaces(implementationType))
 			{
-				iface(interfaceType, implementationType);
+				mapInterfaceToImplementation(interfaceType, implementationType);
 			}
 		}
 

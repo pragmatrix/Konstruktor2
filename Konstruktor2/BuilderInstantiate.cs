@@ -22,12 +22,12 @@ namespace Konstruktor
 					return Func2Factory.instantiate(t, scope);
 			}
 
-			var instance = instantiateAndWireByReflectionConstructor(t, scope);
+			var instance = instantiateByReflectionConstructor(t, scope);
 			scope.own(instance);
 			return instance;
 		}
 
-		object instantiateAndWireByReflectionConstructor(Type t, IScope scope)
+		object instantiateByReflectionConstructor(Type t, IScope scope)
 		{
 			var constructors = t.GetConstructors();
 			if (constructors.Length == 0)
@@ -85,7 +85,7 @@ namespace Konstruktor
 				return false;
 
 			for (int i = 0; i != types.Length; ++i)
-				if (types[i] == parameters[i].ParameterType)
+				if (types[i] != parameters[i].ParameterType)
 					return false;
 
 			return true;
