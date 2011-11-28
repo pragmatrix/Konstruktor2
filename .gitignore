@@ -1,0 +1,5 @@
+Debug
+Backup
+*.suo
+*.user
+packages/

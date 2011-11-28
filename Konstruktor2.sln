@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konstruktor2", "Konstruktor2\Konstruktor2.csproj", "{680D590A-F8D3-413D-884C-0C4D8136F8D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konstruktor2.Tests", "Konstruktor2.Tests\Konstruktor2.Tests.csproj", "{3EF3D4D2-2667-413A-84F6-1B8E65DC1CD6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{680D590A-F8D3-413D-884C-0C4D8136F8D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{680D590A-F8D3-413D-884C-0C4D8136F8D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{680D590A-F8D3-413D-884C-0C4D8136F8D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{680D590A-F8D3-413D-884C-0C4D8136F8D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EF3D4D2-2667-413A-84F6-1B8E65DC1CD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EF3D4D2-2667-413A-84F6-1B8E65DC1CD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EF3D4D2-2667-413A-84F6-1B8E65DC1CD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EF3D4D2-2667-413A-84F6-1B8E65DC1CD6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
