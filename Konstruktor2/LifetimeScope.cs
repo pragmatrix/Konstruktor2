@@ -18,10 +18,10 @@ namespace Konstruktor
 			_builder = builder;
 		}
 
-		LifetimeScope(IBuilder builder, ILifetimeScope parent, uint level)
+		LifetimeScope(IBuilder builder, ILifetimeScope parent_, uint level)
 			:this(builder)
 		{
-			_parent_ = parent;
+			_parent_ = parent_;
 			_level = level;
 
 			// store the scope itself,
