@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace Konstruktor
 {
@@ -12,7 +11,6 @@ namespace Konstruktor
 		readonly uint _level;
 
 		readonly Dictionary<Type, object> _instances = new Dictionary<Type, object>();
-		readonly Dictionary<Type, Action<object, EventInfo>> _wireEventHandler = new Dictionary<Type, Action<object, EventInfo>>();
 		readonly IList<IDisposable> _objectsToDispose = new List<IDisposable>();
 
 		public LifetimeScope(IBuilder builder)
@@ -58,7 +56,6 @@ namespace Konstruktor
 			} 
 
 			// now we are safe!
-			_wireEventHandler.Clear();
 			_instances.Clear();
 		}
 
