@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace Konstruktor
 {
-	sealed class LifetimeScope : IScope
+	sealed class LifetimeScope : ILifetimeScope
 	{
 		readonly object _ = new object();
-		readonly IScope _parent_;
+		readonly ILifetimeScope _parent_;
 		readonly IBuilder _builder;
 		readonly uint _level;
 
@@ -18,16 +18,16 @@ namespace Konstruktor
 			_builder = builder;
 		}
 
-		LifetimeScope(IBuilder builder, IScope parent, uint level)
+		LifetimeScope(IBuilder builder, ILifetimeScope parent, uint level)
 			:this(builder)
 		{
 			_parent_ = parent;
 			_level = level;
 
 			// store the scope itself,
-			// this enables Owned<T> to work without changes
+			// this enables Owned<T> to work without hacks
 			
-			_instances.Add(typeof (IScope), this);
+			_instances.Add(typeof (ILifetimeScope), this);
 		}
 
 		#region Public / Thread Safe
@@ -120,7 +120,7 @@ namespace Konstruktor
 				_objectsToDispose.Add(disp);
 		}
 
-		public IScope beginNestedScope()
+		public ILifetimeScope beginNestedScope()
 		{
 			return new LifetimeScope(_builder, this, _level+1);
 		}

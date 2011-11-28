@@ -8,12 +8,12 @@ namespace Konstruktor
 {
 	interface IBuilder
 	{
-		object build(Type t, IScope scope);
+		object build(Type t, ILifetimeScope lifetimeScope);
 	}
 
 	public sealed partial class Builder : IBuilder
 	{
-		readonly Dictionary<Type, Func<IScope, object>> _explicitGenerators = new Dictionary<Type, Func<IScope, object>>();
+		readonly Dictionary<Type, Func<ILifetimeScope, object>> _explicitGenerators = new Dictionary<Type, Func<ILifetimeScope, object>>();
 		readonly Dictionary<Type, Type> _interfaceToImplementation = new Dictionary<Type, Type>();
 		readonly Dictionary<Type, MethodInfo> _generatorMethods = new Dictionary<Type, MethodInfo>();
 		readonly Dictionary<Type, Type[]> _preferredConstructor = new Dictionary<Type, Type[]>();
@@ -44,7 +44,7 @@ namespace Konstruktor
 				_builder.mapInterfaceToImplementation(typeof (InterfaceT), typeof (ImplementationT));
 			}
 
-			public void generate(Func<IScope, InterfaceT> generator)
+			public void generate(Func<ILifetimeScope, InterfaceT> generator)
 			{
 				_builder.registerGenerator(generator);
 			}
@@ -76,7 +76,7 @@ namespace Konstruktor
 			_interfaceToImplementation[interfaceType] = implementationType;
 		}
 
-		public void registerGenerator<GeneratedT>(Func<IScope, GeneratedT> constructor)
+		public void registerGenerator<GeneratedT>(Func<ILifetimeScope, GeneratedT> constructor)
 		{
 			_explicitGenerators.Add(typeof(GeneratedT), scope => constructor(scope));
 		}
@@ -150,7 +150,7 @@ namespace Konstruktor
 					(allInterfaces.SelectMany(t => t.GetInterfaces()));
 		}
 
-		public IScope beginScope()
+		public ILifetimeScope beginScope()
 		{
 #if DEBUG
 			_frozen = true;

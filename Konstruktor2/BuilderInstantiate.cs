@@ -8,7 +8,7 @@ namespace Konstruktor
 {
 	partial class Builder
 	{
-		object instantiate(Type t, IScope scope)
+		object instantiate(Type t, ILifetimeScope lifetimeScope)
 		{
 			if (t.IsValueType || Type.GetTypeCode(t) == TypeCode.String)
 				throw new ResolveException("failed to instantiate type {0}: no reference or string type", t);
@@ -17,17 +17,17 @@ namespace Konstruktor
 			{
 				var typeDef = t.GetGenericTypeDefinition();
 				if (typeDef == typeof(Func<>))
-					return Func1Factory.instantiate(t, scope);
+					return Func1Factory.instantiate(t, lifetimeScope);
 				if (typeDef == typeof(Func<,>))
-					return Func2Factory.instantiate(t, scope);
+					return Func2Factory.instantiate(t, lifetimeScope);
 			}
 
-			var instance = instantiateByReflectionConstructor(t, scope);
-			scope.own(instance);
+			var instance = instantiateByReflectionConstructor(t, lifetimeScope);
+			lifetimeScope.own(instance);
 			return instance;
 		}
 
-		object instantiateByReflectionConstructor(Type t, IScope scope)
+		object instantiateByReflectionConstructor(Type t, ILifetimeScope lifetimeScope)
 		{
 			var constructors = t.GetConstructors();
 			if (constructors.Length == 0)
@@ -40,14 +40,14 @@ namespace Konstruktor
 
 			foreach (var p in parameters.indices())
 			{
-				var obj = scope.resolve(parameters[p].ParameterType);
+				var obj = lifetimeScope.resolve(parameters[p].ParameterType);
 				resolvedObjects[p] = obj;
 			}
 
 			var instance = FormatterServices.GetUninitializedObject(t);
 			constructor.Invoke(instance, resolvedObjects);
 
-			scope.Debug("inst {2,8:X}: {0} => {1}".fmt(t.Name, instance, (uint)instance.GetHashCode()));
+			lifetimeScope.Debug("inst {2,8:X}: {0} => {1}".fmt(t.Name, instance, (uint)instance.GetHashCode()));
 
 			return instance;
 		}

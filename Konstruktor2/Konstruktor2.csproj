@@ -54,7 +54,7 @@
     <Compile Include="Func1Factory.cs" />
     <Compile Include="Func2Factory.cs" />
     <Compile Include="GeneratorMethodAttribute.cs" />
-    <Compile Include="IScope.cs" />
+    <Compile Include="ILifetimeScope.cs" />
     <Compile Include="LifetimeScope.cs" />
     <Compile Include="Owned.cs" />
     <Compile Include="PreferredConstructorAttribute.cs" />

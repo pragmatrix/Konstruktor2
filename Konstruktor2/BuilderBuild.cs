@@ -6,51 +6,51 @@ namespace Konstruktor
 {
 	partial class Builder
 	{
-		public object build(Type t, IScope scope)
+		public object build(Type t, ILifetimeScope lifetimeScope)
 		{
 #if DEBUG
 			Debug.Assert(_frozen);
 #endif
-			Func<IScope, object> explicitGenerator;
+			Func<ILifetimeScope, object> explicitGenerator;
 			if (_explicitGenerators.TryGetValue(t, out explicitGenerator))
-				return buildByExplicitGenerator(explicitGenerator, scope);
+				return buildByExplicitGenerator(explicitGenerator, lifetimeScope);
 
-			return t.IsInterface ? buildFromInterface(t, scope) : instantiate(t, scope);
+			return t.IsInterface ? buildFromInterface(t, lifetimeScope) : instantiate(t, lifetimeScope);
 		}
 
-		static object buildByExplicitGenerator(Func<IScope, object> explicitGenerator, IScope scope)
+		static object buildByExplicitGenerator(Func<ILifetimeScope, object> explicitGenerator, ILifetimeScope lifetimeScope)
 		{
-			var instance = explicitGenerator(scope);
-			scope.own(instance);
+			var instance = explicitGenerator(lifetimeScope);
+			lifetimeScope.own(instance);
 			return instance;
 		}
 
-		object buildFromInterface(Type t, IScope scope)
+		object buildFromInterface(Type t, ILifetimeScope lifetimeScope)
 		{
 			Debug.Assert(t.IsInterface);
 			var implementation = tryGetImplementationForInterface(t);
 			if (implementation != null)
-				return scope.resolve(implementation);
+				return lifetimeScope.resolve(implementation);
 
 			if (t.IsGenericType)
-				return buildFromGenericInterface(t, scope);
+				return buildFromGenericInterface(t, lifetimeScope);
 
 			throw new ResolveException("failed to resolve type {0}: failed to resolve interface", t);
 		}
 
-		object buildFromGenericInterface(Type genericInterface, IScope scope)
+		object buildFromGenericInterface(Type genericInterface, ILifetimeScope lifetimeScope)
 		{
 			Debug.Assert(genericInterface.IsInterface && genericInterface.IsGenericType && !genericInterface.IsGenericTypeDefinition);
 			var def = genericInterface.GetGenericTypeDefinition();
 			var implementation = tryGetImplementationForInterface(def);
 			if (implementation == null)
-				return buildFromGenericByUsingAGenerator(genericInterface, scope);
+				return buildFromGenericByUsingAGenerator(genericInterface, lifetimeScope);
 
 			Debug.Assert(implementation.GetGenericArguments().Length == genericInterface.GetGenericArguments().Length);
 
 			var implementationType = implementation.MakeGenericType(genericInterface.GetGenericArguments());
 
-			return scope.resolve(implementationType);
+			return lifetimeScope.resolve(implementationType);
 		}
 
 		Type tryGetImplementationForInterface(Type interfaceType)
@@ -61,7 +61,7 @@ namespace Konstruktor
 			return rType;
 		}
 
-		object buildFromGenericByUsingAGenerator(Type genericInterface, IScope scope)
+		object buildFromGenericByUsingAGenerator(Type genericInterface, ILifetimeScope lifetimeScope)
 		{
 			Debug.Assert(genericInterface.IsInterface && genericInterface.IsGenericType && !genericInterface.IsGenericTypeDefinition);
 			var def = genericInterface.GetGenericTypeDefinition();
@@ -78,11 +78,11 @@ namespace Konstruktor
 
 			var concreteMethod = factoryMethod.MakeGenericMethod(arguments);
 
-			var generated_ = callStaticMethod(concreteMethod, scope);
+			var generated_ = callStaticMethod(concreteMethod, lifetimeScope);
 			// a generated object must be owned by the scope!
-			scope.own(generated_);
+			lifetimeScope.own(generated_);
 
-			scope.Debug("gent {2,8:X}: {0} => {1}".fmt(genericInterface.Name, generated_, generated_ == null ? 0 : (uint)generated_.GetHashCode()));
+			lifetimeScope.Debug("gent {2,8:X}: {0} => {1}".fmt(genericInterface.Name, generated_, generated_ == null ? 0 : (uint)generated_.GetHashCode()));
 
 			return generated_;
 		}
@@ -95,7 +95,7 @@ namespace Konstruktor
 			return method;
 		}
 
-		static object callStaticMethod(MethodInfo concreteMethod, IScope scope)
+		static object callStaticMethod(MethodInfo concreteMethod, ILifetimeScope lifetimeScope)
 		{
 			Debug.Assert(!concreteMethod.IsGenericMethodDefinition);
 			Debug.Assert(concreteMethod.IsStatic);
@@ -103,7 +103,7 @@ namespace Konstruktor
 			var parameters = concreteMethod.GetParameters();
 			var arguments = new object[parameters.Length];
 			foreach (var p in parameters.indices())
-				arguments[p] = scope.resolve(parameters[p].ParameterType);
+				arguments[p] = lifetimeScope.resolve(parameters[p].ParameterType);
 
 			return concreteMethod.Invoke(null, arguments);
 		}
