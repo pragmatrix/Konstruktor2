@@ -26,7 +26,7 @@ namespace Konstruktor
 			_parent_ = parent;
 			_level = level;
 
-			// store the scope itsself,
+			// store the scope itself,
 			// this enables Owned<T> to work without changes
 			
 			_instances.Add(typeof (IScope), this);

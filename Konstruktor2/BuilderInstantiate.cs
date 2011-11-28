@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -17,9 +16,9 @@ namespace Konstruktor
 			if (t.IsGenericType)
 			{
 				var typeDef = t.GetGenericTypeDefinition();
-				if (typeDef.Equals(typeof(Func<>)))
+				if (typeDef == typeof(Func<>))
 					return Func1Factory.instantiate(t, scope);
-				if (typeDef.Equals(typeof(Func<,>)))
+				if (typeDef == typeof(Func<,>))
 					return Func2Factory.instantiate(t, scope);
 			}
 
@@ -86,7 +85,7 @@ namespace Konstruktor
 				return false;
 
 			for (int i = 0; i != types.Length; ++i)
-				if (!types[i].Equals(parameters[i].ParameterType))
+				if (types[i] == parameters[i].ParameterType)
 					return false;
 
 			return true;

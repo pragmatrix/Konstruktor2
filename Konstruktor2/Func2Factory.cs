@@ -7,7 +7,7 @@ namespace Konstruktor
 	{
 		public static object instantiate(Type t, IScope scope)
 		{
-			Debug.Assert(t.GetGenericTypeDefinition().Equals(typeof(Func<,>)));
+			Debug.Assert(t.GetGenericTypeDefinition() == typeof(Func<,>));
 			var funcArgs = t.GetGenericArguments();
 			Debug.Assert(funcArgs.Length == 2);
 
