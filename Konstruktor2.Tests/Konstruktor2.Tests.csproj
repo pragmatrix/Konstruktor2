@@ -60,7 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ImplementationOnly.cs" />
-    <Compile Include="ConstructorArguments.cs" />
     <Compile Include="ConstructorPrecendence.cs" />
     <Compile Include="Examples.cs" />
     <Compile Include="Func1.cs" />

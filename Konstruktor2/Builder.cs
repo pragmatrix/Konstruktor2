@@ -16,7 +16,6 @@ namespace Konstruktor
 		readonly Dictionary<Type, Func<IScope, object>> _explicitGenerators = new Dictionary<Type, Func<IScope, object>>();
 		readonly Dictionary<Type, Type> _interfaceToImplementation = new Dictionary<Type, Type>();
 		readonly Dictionary<Type, MethodInfo> _generatorMethods = new Dictionary<Type, MethodInfo>();
-		readonly Dictionary<Type, List<Func<IScope, object>>> _constructorArguments = new Dictionary<Type,List<Func<IScope, object>>>();
 		readonly Dictionary<Type, Type[]> _preferredConstructor = new Dictionary<Type, Type[]>();
 
 #if DEBUG
@@ -106,25 +105,6 @@ namespace Konstruktor
 				_generatorMethods.Add(typeDefinition, fm);
 			}
 		}
-
-		public void constructorArgument<TypeT, ArgT>(int index, Func<IScope, ArgT> argument)
-		{
-#if DEBUG
-			Debug.Assert(!_frozen);
-#endif
-			Debug.Assert(index >= 0);
-
-			var type = typeof(TypeT);
-			List<Func<IScope, object>> arguments;
-			if (!_constructorArguments.TryGetValue(type, out arguments))
-				_constructorArguments.Add(type, arguments = new List<Func<IScope, object>>());
-
-			while (arguments.Count <= index)
-				arguments.Add(null);
-
-			arguments[index] = (IScope scope) => argument(scope);
-		}
-
 
 		public void preferConstructor<TypeT>(params Type[] constructorTypes)
 		{

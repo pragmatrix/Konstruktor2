@@ -39,17 +39,9 @@ namespace Konstruktor
 
 			var resolvedObjects = new object[parameters.Length];
 
-			List<Func<IScope, object>> arguments_;
-			_constructorArguments.TryGetValue(t, out arguments_);
-
 			foreach (var p in parameters.indices())
 			{
-				bool hasExplicitArgument = arguments_ != null && p < arguments_.Count && arguments_[p] != null;
-
-				var obj = hasExplicitArgument
-					? arguments_[p](scope)
-					: scope.resolve(parameters[p].ParameterType);
-
+				var obj = scope.resolve(parameters[p].ParameterType);
 				resolvedObjects[p] = obj;
 			}
 
