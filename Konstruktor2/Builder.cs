@@ -43,7 +43,7 @@ namespace Konstruktor
 				_builder = builder;
 			}
 
-			public void use<ImplementationT>()
+			public void instantiate<ImplementationT>()
 				where ImplementationT : InterfaceT
 			{
 				_builder.mapInterfaceToImplementation(typeof (InterfaceT), typeof (ImplementationT));

@@ -21,7 +21,7 @@ namespace Konstruktor.Tests
 		public void testConcrete()
 		{
 			var builder = new Builder();
-			builder.forInterface<IDummy>().use<Implementation>();
+			builder.forInterface<IDummy>().instantiate<Implementation>();
 
 			using (var scope = builder.beginScope())
 			{
@@ -37,7 +37,7 @@ namespace Konstruktor.Tests
 		public void testImplementationSecondaryUnregistered()
 		{
 			var builder = new Builder();
-			builder.forInterface<IDummy>().use<Implementation>();
+			builder.forInterface<IDummy>().instantiate<Implementation>();
 
 			using (var scope = builder.beginScope())
 			{
@@ -51,8 +51,8 @@ namespace Konstruktor.Tests
 		public void testImplementationSecondaryRegistered()
 		{
 			var builder = new Builder();
-			builder.forInterface<IDummy>().use<Implementation>();
-			builder.forInterface<ISecondary>().use<Implementation>();
+			builder.forInterface<IDummy>().instantiate<Implementation>();
+			builder.forInterface<ISecondary>().instantiate<Implementation>();
 
 			using (var scope = builder.beginScope())
 			{

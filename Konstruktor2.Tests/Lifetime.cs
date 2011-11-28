@@ -60,7 +60,7 @@ namespace Konstruktor.Tests
 
 			var b = new Builder();
 
-			b.forInterface<IB>().use<B>();
+			b.forInterface<IB>().instantiate<B>();
 
 			using (var scope = b.beginScope())
 			{

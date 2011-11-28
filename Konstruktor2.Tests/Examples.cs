@@ -55,7 +55,7 @@ namespace Konstruktor.Tests
 		public static void mapInterface()
 		{
 			var b = new Builder();
-			b.forInterface<IInterface>().use<Implementation>();
+			b.forInterface<IInterface>().instantiate<Implementation>();
 			using (var s = b.beginScope())
 			{
 				var implementation = s.resolve<IInterface>();

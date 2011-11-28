@@ -32,7 +32,7 @@ namespace Konstruktor.Tests
 		{
 			var builder = new Builder();
 			builder.generator<IDummy>(s => new Implementation());
-			builder.forInterface<IDummy>().use<Implementation2>();
+			builder.forInterface<IDummy>().instantiate<Implementation2>();
 
 			using (var scope = builder.beginScope())
 			{
