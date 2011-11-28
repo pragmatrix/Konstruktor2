@@ -22,11 +22,6 @@ namespace Konstruktor
 		bool _frozen;
 #endif
 
-		public void generator<GeneratedT>(Func<IScope, GeneratedT> constructor)
-		{
-			_explicitGenerators.Add(typeof(GeneratedT), scope => constructor(scope));
-		}
-
 		public ForInterface<InterfaceT> forInterface<InterfaceT>()
 			where InterfaceT:class
 		{
@@ -47,6 +42,11 @@ namespace Konstruktor
 				where ImplementationT : InterfaceT
 			{
 				_builder.mapInterfaceToImplementation(typeof (InterfaceT), typeof (ImplementationT));
+			}
+
+			public void generate(Func<IScope, InterfaceT> generator)
+			{
+				_builder.registerGenerator(generator);
 			}
 		}
 
@@ -76,12 +76,17 @@ namespace Konstruktor
 			_interfaceToImplementation[interfaceType] = implementationType;
 		}
 
-		public void generators<FactoryT>()
+		public void registerGenerator<GeneratedT>(Func<IScope, GeneratedT> constructor)
 		{
-			generators(typeof(FactoryT));
+			_explicitGenerators.Add(typeof(GeneratedT), scope => constructor(scope));
 		}
 
-		public void generators(Type type)
+		public void registerGeneratorsIn<FactoryT>()
+		{
+			registerGeneratorsIn(typeof(FactoryT));
+		}
+
+		public void registerGeneratorsIn(Type type)
 		{
 #if DEBUG
 			Debug.Assert(!_frozen);

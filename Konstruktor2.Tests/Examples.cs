@@ -121,7 +121,7 @@ namespace Konstruktor.Tests
 		public static void explicitGenerator()
 		{
 			var b = new Builder();
-			b.generator<IGeneratorExample>(scope => new GeneratorExample());
+			b.registerGenerator<IGeneratorExample>(scope => new GeneratorExample());
 			using (var s = b.beginScope())
 			{
 				var generated = s.resolve<IGeneratorExample>();
@@ -138,7 +138,7 @@ namespace Konstruktor.Tests
 		public static void explicitGeneratorPropertyInjection()
 		{
 			var b = new Builder();
-			b.generator(scope => new PropertyInjection {Generator = scope.resolve<GeneratorExample>()});
+			b.registerGenerator(scope => new PropertyInjection {Generator = scope.resolve<GeneratorExample>()});
 
 			using (var s = b.beginScope())
 			{

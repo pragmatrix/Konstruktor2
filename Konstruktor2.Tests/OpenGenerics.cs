@@ -99,7 +99,7 @@ namespace Konstruktor.Tests
 		public void openGenericGenerator()
 		{
 			var builder = new Builder();
-			builder.generators(GetType());
+			builder.registerGeneratorsIn(GetType());
 
 			using (var scope = builder.beginScope())
 			{
@@ -116,6 +116,5 @@ namespace Konstruktor.Tests
 		{
 			return new Shared2<T>(t);
 		}
-
 	}
 }
