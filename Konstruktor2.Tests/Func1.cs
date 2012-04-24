@@ -32,7 +32,7 @@ namespace Konstruktor.Tests
 		{
 			_instancesDestructed = 0;
 
-			var b = new Builder();
+			var b = new Konstruktor();
 
 			using (var scope = b.beginScope())
 			{

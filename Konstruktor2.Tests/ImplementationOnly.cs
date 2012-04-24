@@ -20,7 +20,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public void testImplementationInstantiation()
 		{
-			var b = new Builder();
+			var b = new Konstruktor();
 
 			using (var scope = b.beginScope())
 			{

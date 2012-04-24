@@ -2,7 +2,7 @@
 
 namespace Konstruktor
 {
-	public interface ILifetimeScope : IDisposable
+	public interface IKonstruktorScope : IDisposable
 	{
 
 		// Resolve in this scope or parent scopes, create a new instance in this scope if it is not existing yet.
@@ -15,7 +15,7 @@ namespace Konstruktor
 		void store<TypeT>(TypeT instance);
 		void own(object instance_);
 
-		ILifetimeScope beginNestedScope();
+		IKonstruktorScope beginNestedScope();
 
 		// internal
 		bool tryResolveExisting(Type t, out object o);
@@ -23,14 +23,14 @@ namespace Konstruktor
 
 	public static class ScopeExtensions
 	{
-		public static T resolve<T>(this ILifetimeScope lifetimeScope)
+		public static T resolve<T>(this IKonstruktorScope konstruktorScope)
 		{
-			return (T) lifetimeScope.resolve(typeof (T));
+			return (T) konstruktorScope.resolve(typeof (T));
 		}
 
-		public static T resolveLocal<T>(this ILifetimeScope lifetimeScope)
+		public static T resolveLocal<T>(this IKonstruktorScope konstruktorScope)
 		{
-			return (T) lifetimeScope.resolveLocal(typeof (T));
+			return (T) konstruktorScope.resolveLocal(typeof (T));
 		}
 	}
 }

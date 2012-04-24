@@ -16,7 +16,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public void openGeneric()
 		{
-			var builder = new Builder();
+			var builder = new Konstruktor();
 			builder.mapInterfaceToImplementation(typeof(IShared<>), typeof(Shared<>));
 
 			using (var scope = builder.beginScope())
@@ -37,7 +37,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public void openGeneric2()
 		{
-			var builder = new Builder();
+			var builder = new Konstruktor();
 			builder.mapInterfaceToImplementation(typeof(IShared2<,>), typeof(Shared2<,>));
 
 			using (var scope = builder.beginScope())
@@ -64,7 +64,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public void openGenericAndExplicit()
 		{
-			var builder = new Builder();
+			var builder = new Konstruktor();
 			builder.mapInterfaceToImplementation(typeof(IOG<>), typeof(OG<>));
 			builder.mapInterfaceToImplementation(typeof(IOG<int>), typeof(ExplicitInt));
 
@@ -98,7 +98,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public void openGenericGenerator()
 		{
-			var builder = new Builder();
+			var builder = new Konstruktor();
 			builder.registerGeneratorsIn(GetType());
 
 			using (var scope = builder.beginScope())

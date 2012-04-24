@@ -31,7 +31,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public static void myFirstKonstrukt()
 		{
-			var b = new Builder();
+			var b = new Konstruktor();
 			using (var s = b.beginScope())
 			{
 				var bInstance = s.resolve<B>();
@@ -54,7 +54,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public static void mapInterface()
 		{
-			var b = new Builder();
+			var b = new Konstruktor();
 			b.forInterface<IInterface>().instantiate<Implementation>();
 			using (var s = b.beginScope())
 			{
@@ -95,7 +95,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public static void serverFunc()
 		{
-			var b = new Builder();
+			var b = new Konstruktor();
 			using (var s = b.beginScope())
 			{
 				var server = s.resolve<Server>();
@@ -120,7 +120,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public static void explicitGenerator()
 		{
-			var b = new Builder();
+			var b = new Konstruktor();
 			b.registerGenerator<IGeneratorExample>(scope => new GeneratorExample());
 			using (var s = b.beginScope())
 			{
@@ -137,7 +137,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public static void explicitGeneratorPropertyInjection()
 		{
-			var b = new Builder();
+			var b = new Konstruktor();
 			b.registerGenerator(scope => new PropertyInjection {Generator = scope.resolve<GeneratorExample>()});
 
 			using (var s = b.beginScope())

@@ -41,7 +41,7 @@ namespace Konstruktor.Tests
 		{
 			_disposed.Clear();
 
-			var b = new Builder();
+			var b = new Konstruktor();
 
 			using (var scope = b.beginScope())
 			{
@@ -58,7 +58,7 @@ namespace Konstruktor.Tests
 		{
 			_disposed.Clear();
 
-			var b = new Builder();
+			var b = new Konstruktor();
 
 			b.forInterface<IB>().instantiate<B>();
 

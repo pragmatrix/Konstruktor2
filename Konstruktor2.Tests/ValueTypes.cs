@@ -25,7 +25,7 @@ namespace Konstruktor.Tests
 		[Test, ExpectedException(typeof(ResolveException))]
 		public void testValueTypes()
 		{
-			var b = new Builder();
+			var b = new Konstruktor();
 
 			using (var s = b.beginScope())
 			{
@@ -36,7 +36,7 @@ namespace Konstruktor.Tests
 		[Test, ExpectedException(typeof(ResolveException))]
 		public void testStringType()
 		{
-			var b = new Builder();
+			var b = new Konstruktor();
 
 			using (var s = b.beginScope())
 			{

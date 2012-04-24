@@ -56,7 +56,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public void nestedScopeOwned()
 		{
-			var b = new Builder();
+			var b = new Konstruktor();
 
 			using (var scope = b.beginScope())
 			{

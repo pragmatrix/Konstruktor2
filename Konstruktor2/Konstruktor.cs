@@ -7,14 +7,14 @@ using Konstruktor.Detail;
 
 namespace Konstruktor
 {
-	interface IBuilder
+	interface IKonstruktor
 	{
-		object build(Type t, ILifetimeScope lifetimeScope);
+		object build(Type t, IKonstruktorScope konstruktorScope);
 	}
 
-	public sealed partial class Builder : IBuilder
+	public sealed partial class Konstruktor : IKonstruktor
 	{
-		readonly Dictionary<Type, Func<ILifetimeScope, object>> _explicitGenerators = new Dictionary<Type, Func<ILifetimeScope, object>>();
+		readonly Dictionary<Type, Func<IKonstruktorScope, object>> _explicitGenerators = new Dictionary<Type, Func<IKonstruktorScope, object>>();
 		readonly Dictionary<Type, Type> _interfaceToImplementation = new Dictionary<Type, Type>();
 		readonly Dictionary<Type, MethodInfo> _generatorMethods = new Dictionary<Type, MethodInfo>();
 		readonly Dictionary<Type, Type[]> _preferredConstructor = new Dictionary<Type, Type[]>();
@@ -32,22 +32,22 @@ namespace Konstruktor
 		public sealed class ForInterface<InterfaceT>
 			where InterfaceT:class
 		{
-			readonly Builder _builder;
+			readonly Konstruktor _konstruktor;
 
-			public ForInterface(Builder builder)
+			public ForInterface(Konstruktor konstruktor)
 			{
-				_builder = builder;
+				_konstruktor = konstruktor;
 			}
 
 			public void instantiate<ImplementationT>()
 				where ImplementationT : InterfaceT
 			{
-				_builder.mapInterfaceToImplementation(typeof (InterfaceT), typeof (ImplementationT));
+				_konstruktor.mapInterfaceToImplementation(typeof (InterfaceT), typeof (ImplementationT));
 			}
 
-			public void generate(Func<ILifetimeScope, InterfaceT> generator)
+			public void generate(Func<IKonstruktorScope, InterfaceT> generator)
 			{
-				_builder.registerGenerator(generator);
+				_konstruktor.registerGenerator(generator);
 			}
 		}
 
@@ -77,7 +77,7 @@ namespace Konstruktor
 			_interfaceToImplementation[interfaceType] = implementationType;
 		}
 
-		public void registerGenerator<GeneratedT>(Func<ILifetimeScope, GeneratedT> constructor)
+		public void registerGenerator<GeneratedT>(Func<IKonstruktorScope, GeneratedT> constructor)
 		{
 			_explicitGenerators.Add(typeof(GeneratedT), scope => constructor(scope));
 		}
@@ -151,12 +151,12 @@ namespace Konstruktor
 					(allInterfaces.SelectMany(t => t.GetInterfaces()));
 		}
 
-		public ILifetimeScope beginScope()
+		public IKonstruktorScope beginScope()
 		{
 #if DEBUG
 			_frozen = true;
 #endif
-			return new LifetimeScope(this);
+			return new KonstruktorScope(this);
 		}
 
 	}

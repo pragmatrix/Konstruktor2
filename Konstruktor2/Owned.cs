@@ -7,7 +7,7 @@ namespace Konstruktor
 		readonly IDisposable _owner;
 		readonly T _value;
 
-		public Owned(ILifetimeScope owner, T value)
+		public Owned(IKonstruktorScope owner, T value)
 			: this((IDisposable)owner, value)
 		{
 		}

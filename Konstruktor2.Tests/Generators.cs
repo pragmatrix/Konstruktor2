@@ -14,7 +14,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public void testExplicitGenerator()
 		{
-			var builder = new Builder();
+			var builder = new Konstruktor();
 			builder.registerGenerator<IDummy>(s => new Implementation());
 
 			using (var scope = builder.beginScope())
@@ -30,7 +30,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public void testExplicitGeneratorPrecedence()
 		{
-			var builder = new Builder();
+			var builder = new Konstruktor();
 			builder.forInterface<IDummy>().generate(s => new Implementation());
 			builder.forInterface<IDummy>().instantiate<Implementation2>();
 
@@ -44,7 +44,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public void testImplementationGenerator()
 		{
-			var builder = new Builder();
+			var builder = new Konstruktor();
 			builder.registerGenerator(s => new Implementation());
 
 			using (var scope = builder.beginScope())

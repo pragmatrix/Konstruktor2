@@ -25,7 +25,7 @@ namespace Konstruktor.Tests
 		[Test, ExpectedException(typeof(ResolveException))]
 		public void ambiguous()
 		{
-			var b = new Builder();
+			var b = new Konstruktor();
 
 			using (var s = b.beginScope())
 			{
@@ -43,7 +43,7 @@ namespace Konstruktor.Tests
 		[Test, ExpectedException(typeof(ResolveException))]
 		public void internalConstructor()
 		{
-			var b = new Builder();
+			var b = new Konstruktor();
 
 			using (var s = b.beginScope())
 			{
@@ -66,7 +66,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public void moreArguments()
 		{
-			var b = new Builder();
+			var b = new Konstruktor();
 
 			using (var s = b.beginScope())
 			{
@@ -92,7 +92,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public void preferred()
 		{
-			var b = new Builder();
+			var b = new Konstruktor();
 
 			using (var s = b.beginScope())
 			{
@@ -102,16 +102,16 @@ namespace Konstruktor.Tests
 
 		#endregion
 
-		#region Preferred by Builder
+		#region Preferred by Konstruktor
 
-		sealed class PreferredByBuilder
+		sealed class PreferredByKonstruktor
 		{
-			public PreferredByBuilder(B b)
+			public PreferredByKonstruktor(B b)
 			{
 				
 			}
 
-			public PreferredByBuilder(B b, B c)
+			public PreferredByKonstruktor(B b, B c)
 			{
 				throw new NotImplementedException();
 			}
@@ -121,13 +121,13 @@ namespace Konstruktor.Tests
 		[Test]
 		public void preferredByBuilder()
 		{
-			var b = new Builder();
+			var b = new Konstruktor();
 
-			b.preferConstructor<PreferredByBuilder>(typeof(B));
+			b.preferConstructor<PreferredByKonstruktor>(typeof(B));
 
 			using (var s = b.beginScope())
 			{
-				s.resolve<PreferredByBuilder>();
+				s.resolve<PreferredByKonstruktor>();
 			}
 		}
 

@@ -17,12 +17,12 @@ namespace Konstruktor.Tests
 		{
 		};
 
-		Builder b;
+		Konstruktor b;
 
 		[SetUp]
 		public void setup()
 		{
-			b = new Builder();
+			b = new Konstruktor();
 			b.scanAssembly(Assembly.GetExecutingAssembly());
 		}
 

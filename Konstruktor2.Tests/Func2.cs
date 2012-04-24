@@ -42,7 +42,7 @@ namespace Konstruktor.Tests
 		{
 			_instanceDestructed = false;
 
-			var b = new Builder();
+			var b = new Konstruktor();
 
 			using (var scope = b.beginScope())
 			{

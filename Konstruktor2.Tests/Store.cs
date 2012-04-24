@@ -22,7 +22,7 @@ namespace Konstruktor.Tests
 		[Test]
 		public void explicitZeroStore()
 		{
-			var b = new Builder();
+			var b = new Konstruktor();
 	
 			using (var scope = b.beginScope())
 			{

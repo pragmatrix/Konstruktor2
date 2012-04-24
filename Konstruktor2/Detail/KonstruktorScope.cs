@@ -3,23 +3,23 @@ using System.Collections.Generic;
 
 namespace Konstruktor.Detail
 {
-	sealed class LifetimeScope : ILifetimeScope
+	sealed class KonstruktorScope : IKonstruktorScope
 	{
 		readonly object _ = new object();
-		readonly ILifetimeScope _parent_;
-		readonly IBuilder _builder;
+		readonly IKonstruktorScope _parent_;
+		readonly IKonstruktor _konstruktor;
 		readonly uint _level;
 
 		readonly Dictionary<Type, object> _instances = new Dictionary<Type, object>();
 		readonly IList<IDisposable> _objectsToDispose = new List<IDisposable>();
 
-		public LifetimeScope(IBuilder builder)
+		public KonstruktorScope(IKonstruktor konstruktor)
 		{
-			_builder = builder;
+			_konstruktor = konstruktor;
 		}
 
-		LifetimeScope(IBuilder builder, ILifetimeScope parent, uint level)
-			:this(builder)
+		KonstruktorScope(IKonstruktor konstruktor, IKonstruktorScope parent, uint level)
+			:this(konstruktor)
 		{
 			_parent_ = parent;
 			_level = level;
@@ -27,7 +27,7 @@ namespace Konstruktor.Detail
 			// store the scope itself,
 			// this enables Owned<T> to work without hacks
 			
-			_instances.Add(typeof (ILifetimeScope), this);
+			_instances.Add(typeof (IKonstruktorScope), this);
 		}
 
 		#region Public / Thread Safe
@@ -67,7 +67,7 @@ namespace Konstruktor.Detail
 				if (internalTryResolveExisting(type, out instance_))
 					return instance_;
 
-				var newObj = _builder.build(type, this);
+				var newObj = _konstruktor.build(type, this);
 
 				internalStore(type, newObj);
 				return newObj;
@@ -90,7 +90,7 @@ namespace Konstruktor.Detail
 				if (_instances.TryGetValue(type, out o))
 					return o;
 
-				var newObj = _builder.build(type, this);
+				var newObj = _konstruktor.build(type, this);
 				internalStore(type, newObj);
 				return newObj;
 			}
@@ -120,9 +120,9 @@ namespace Konstruktor.Detail
 				_objectsToDispose.Add(disp);
 		}
 
-		public ILifetimeScope beginNestedScope()
+		public IKonstruktorScope beginNestedScope()
 		{
-			return new LifetimeScope(_builder, this, _level+1);
+			return new KonstruktorScope(_konstruktor, this, _level+1);
 		}
 
 		#endregion
