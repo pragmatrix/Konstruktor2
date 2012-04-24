@@ -1,5 +1,8 @@
-Debug
-Backup
-*.suo
-*.user
-packages/
+/Debug/
+/Backup/
+/*.suo
+/*.user
+/packages/
+obj/
+bin/
+*.DotSettings
