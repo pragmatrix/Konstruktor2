@@ -51,16 +51,18 @@
     <Compile Include="BuilderBuild.cs" />
     <Compile Include="BuilderInstantiate.cs" />
     <Compile Include="DefaultImplementationAttribute.cs" />
-    <Compile Include="Func1Factory.cs" />
-    <Compile Include="Func2Factory.cs" />
+    <Compile Include="Detail\DisposeChain.cs" />
+    <Compile Include="Detail\Func1Factory.cs" />
+    <Compile Include="Detail\Func2Factory.cs" />
+    <Compile Include="Detail\IDisposeChain.cs" />
+    <Compile Include="Detail\LifetimeScope.cs" />
+    <Compile Include="Detail\Toolbox.cs" />
     <Compile Include="GeneratorMethodAttribute.cs" />
     <Compile Include="ILifetimeScope.cs" />
-    <Compile Include="LifetimeScope.cs" />
     <Compile Include="Owned.cs" />
     <Compile Include="PreferredConstructorAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResolveException.cs" />
-    <Compile Include="Toolbox.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Konstruktor2.snk" />

@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace Konstruktor
+namespace Konstruktor.Detail
 {
-	public static class StringFormatExtensions
+	static class StringFormatExtensions
 	{
 		public static string fmt(this string format, params object[] objects)
 		{
@@ -26,7 +26,7 @@ namespace Konstruktor
 		}
 	}
 
-	public static class LogExtensions
+	static class LogExtensions
 	{
 		[Conditional("DEBUG")]
 		public static void Debug(this object obj, string msg)
@@ -38,7 +38,7 @@ namespace Konstruktor
 			(obj, msg) => System.Diagnostics.Debug.WriteLine(obj.ToString() + ": " + msg);
 	}
 
-	public static class MemberInfoExtensions
+	static class MemberInfoExtensions
 	{
 		public static bool hasAttribute<AttributeT>(this MemberInfo mi)
 			where AttributeT : Attribute
@@ -47,7 +47,7 @@ namespace Konstruktor
 		}
 	}
 
-	public static class Indices
+	static class Indices
 	{
 		public static IEnumerable<int> indices(this Array a)
 		{

@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 
-namespace Konstruktor
+namespace Konstruktor.Detail
 {
 	static class Func1Factory
 	{
