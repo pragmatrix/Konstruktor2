@@ -1,4 +1,4 @@
-Konstruktor is a tiny dependency injection container for .NET 3.5.
+Konstruktor is a constructor dependency injector for .NET.
 
 Konstruktor features:
 
@@ -8,6 +8,7 @@ Konstruktor features:
 - Automatic lifetime management by supporting `IDisposable`
 - Hierarchical lifetime scoping
 - Thread-safe
+- Specification of default implementations by attributes.
 
 Konstruktor does not support:
 
