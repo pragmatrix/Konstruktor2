@@ -7,19 +7,13 @@ using Konstruktor.Detail;
 
 namespace Konstruktor
 {
-	interface IKonstruktor
-	{
-		object build(ILifetimeScope lifetimeScope, Type t);
-		IEnumerable<Type> pinsOf(Type targetType);
-	}
-
 	public sealed partial class Konstruktor : IKonstruktor
 	{
 		readonly Dictionary<Type, Func<ILifetimeScope, object>> _explicitGenerators = new Dictionary<Type, Func<ILifetimeScope, object>>();
 		readonly Dictionary<Type, Type> _interfaceToImplementation = new Dictionary<Type, Type>();
 		readonly Dictionary<Type, MethodInfo> _generatorMethods = new Dictionary<Type, MethodInfo>();
 		readonly Dictionary<Type, Type[]> _preferredConstructor = new Dictionary<Type, Type[]>();
-		readonly Dictionary<Type, List<Type>> _pins = new Dictionary<Type, List<Type>>(); 
+		readonly Dictionary<Type, HashSet<Type>> _pins = new Dictionary<Type, HashSet<Type>>(); 
 
 #if DEBUG
 		bool _frozen;
@@ -121,7 +115,7 @@ namespace Konstruktor
 					if (defaultImplementation != null)
 						registerDefaultImplementationAttribute(implementationType, defaultImplementation.InterfaceTypes);
 
-					var pinToAttribute = attr as PinToAttribute;
+					var pinToAttribute = attr as PinnedToAttribute;
 					if (pinToAttribute != null)
 					{
 						pinTo(implementationType, pinToAttribute.TargetType);
@@ -155,18 +149,24 @@ namespace Konstruktor
 
 		void pinTo(Type pinnedType, Type targetType)
 		{
-			List<Type> pinnedTypes;
+			HashSet<Type> pinnedTypes;
 			if (!_pins.TryGetValue(targetType, out pinnedTypes))
-				_pins.Add(targetType, pinnedTypes = new List<Type>());
+				_pins.Add(targetType, pinnedTypes = new HashSet<Type>());
 			pinnedTypes.Add(pinnedType);
 		}
 
 		IEnumerable<Type> IKonstruktor.pinsOf(Type targetType)
 		{
-			List<Type> pinnedTypes;
+			HashSet<Type> pinnedTypes;
 			return _pins.TryGetValue(targetType, out pinnedTypes) 
 				? pinnedTypes 
 				: Enumerable.Empty<Type>();
+		}
+
+		bool IKonstruktor.isPinnedTo(Type t, Type targetType)
+		{
+			HashSet<Type> pins;
+			return _pins.TryGetValue(targetType, out pins) && pins.Contains(t);
 		}
 
 		// http://stackoverflow.com/questions/5318685/get-only-direct-interface-instead-of-all
@@ -184,8 +184,7 @@ namespace Konstruktor
 #if DEBUG
 			_frozen = true;
 #endif
-			return new LifetimeScope(this);
+			return new LifetimeScope(this, null);
 		}
-
 	}
 }

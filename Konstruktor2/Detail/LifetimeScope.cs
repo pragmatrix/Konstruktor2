@@ -6,6 +6,7 @@ namespace Konstruktor.Detail
 	sealed class LifetimeScope : ILifetimeScope
 	{
 		readonly object _ = new object();
+		Type _root_;
 		readonly ILifetimeScope _parent_;
 		readonly IKonstruktor _konstruktor;
 		public uint Level { get; private set; }
@@ -13,7 +14,7 @@ namespace Konstruktor.Detail
 		readonly Dictionary<Type, object> _instances = new Dictionary<Type, object>();
 		readonly IList<IDisposable> _objectsToDispose = new List<IDisposable>();
 
-		public LifetimeScope(IKonstruktor konstruktor, ILifetimeScope parent_ = null)
+		public LifetimeScope(IKonstruktor konstruktor, ILifetimeScope parent_)
 		{
 			_konstruktor = konstruktor;
 			_parent_ = parent_;
@@ -24,6 +25,11 @@ namespace Konstruktor.Detail
 			// this enables Owned<T> to work without hacks
 			
 			_instances.Add(typeof (ILifetimeScope), this);
+		}
+
+		bool isRootOrPinned(Type t)
+		{
+			return t == _root_ || _root_ != null && _konstruktor.isPinnedTo(t, _root_);
 		}
 
 		#region Public / Thread Safe
@@ -55,20 +61,39 @@ namespace Konstruktor.Detail
 			_instances.Clear();
 		}
 
-		public object resolve(Type type, bool askParent)
+		/*
+			We were tempted to put the root type in the constructor of the lifetime scope, but
+			then we can not provide arguments for the root instances.
+		*/
+
+		public object resolveRoot(Type type)
+		{
+			lock (_)
+			{
+				if (_root_ != null)
+					throw new ResolveException("Root type has already been resolved", type);
+
+				_root_ = type;
+
+				// force all instances that are pinned to the root type to resolve.
+
+				foreach (var pin in _konstruktor.pinsOf(_root_))
+					resolve(pin);
+
+				return resolve(_root_);
+			}
+		}
+
+		public object resolve(Type type)
 		{
 			lock (_)
 			{
 				object instance_;
-				if (internalTryResolveExisting(type, out instance_, askParent))
+				if (internalTryResolveExisting(type, out instance_))
 					return instance_;
 
 				var newInstance = _konstruktor.build(this, type);
 				internalStore(type, newInstance);
-
-				var pins = _konstruktor.pinsOf(type);
-				foreach (var pin in pins)
-					resolve(pin, askParent: false);
 
 				return newInstance;
 			}
@@ -78,7 +103,7 @@ namespace Konstruktor.Detail
 		{
 			lock (_)
 			{
-				return internalTryResolveExisting(type, out o, askParent:true);
+				return internalTryResolveExisting(type, out o);
 			}
 		}
 		
@@ -113,12 +138,12 @@ namespace Konstruktor.Detail
 
 		#endregion
 
-		bool internalTryResolveExisting(Type type, out object instance, bool askParent)
+		bool internalTryResolveExisting(Type type, out object instance)
 		{
 			if (_instances.TryGetValue(type, out instance))
 				return true;
 
-			if (!askParent || _parent_ == null)
+			if (_parent_ == null || isRootOrPinned(type))
 				return false;
 
 			return _parent_.tryResolveExisting(type, out instance);

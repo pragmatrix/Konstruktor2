@@ -49,10 +49,12 @@
   <ItemGroup>
     <Compile Include="Attributes\DefaultImplementationAttribute.cs" />
     <Compile Include="Attributes\GeneratorMethodAttribute.cs" />
-    <Compile Include="Attributes\PinToAttribute.cs" />
+    <Compile Include="Attributes\PinnedToAttribute.cs" />
     <Compile Include="Attributes\PreferredConstructorAttribute.cs" />
+    <Compile Include="Detail\IKonstruktor.cs" />
     <Compile Include="Konstruktor.cs" />
     <Compile Include="KonstruktorBuild.cs" />
+    <Compile Include="KonstruktorExtensions.cs" />
     <Compile Include="KonstruktorInstantiate.cs" />
     <Compile Include="Detail\DisposeChain.cs" />
     <Compile Include="Detail\Func1Factory.cs" />

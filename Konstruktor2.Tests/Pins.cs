@@ -16,17 +16,13 @@ namespace Konstruktor.Tests
 			k.scanAssembly(Assembly.GetExecutingAssembly());
 		}
 
-
-
-
-
 		[Test]
 		public void pinClassToClass()
 		{
-			using (var s = k.beginScope())
-			{
-				_pinnedInstantiated = false;
+			_pinnedInstantiated = false;
 
+			using (var s = k.beginScope<Document>())
+			{
 				var d = s.resolve<Document>();
 				Assert.That(_pinnedInstantiated, Is.True);
 				var p = s.resolve<PinnedToDocument>();
@@ -40,7 +36,7 @@ namespace Konstruktor.Tests
 
 		static bool _pinnedInstantiated = false;
 
-		[PinTo(typeof(Document))]
+		[PinnedTo(typeof(Document))]
 		public class PinnedToDocument
 		{
 			public readonly Document _doc;
@@ -55,11 +51,10 @@ namespace Konstruktor.Tests
 		[Test]
 		public void pinInterfaceToClass()
 		{
-			using (var s = k.beginScope())
-			{
-				_pinned2Instantiated = false;
+			_pinned2Instantiated = false;
 
-				s.resolve<Document2>();
+			using (k.beginScope<Document2>())
+			{
 				Assert.That(_pinned2Instantiated, Is.True);
 			}
 		}
@@ -68,7 +63,7 @@ namespace Konstruktor.Tests
 		{
 		}
 
-		[PinTo(typeof(Document2))]
+		[PinnedTo(typeof(Document2))]
 		public interface IPinned
 		{
 		}
@@ -89,11 +84,10 @@ namespace Konstruktor.Tests
 		[Test]
 		public void pinClassToInterface()
 		{
-			using (var s = k.beginScope())
-			{
-				_pinned3Instantiated = false;
+			_pinned3Instantiated = false;
 
-				var d = s.resolve<IDocument3>();
+			using (var s = k.beginScope<IDocument3>())
+			{
 				Assert.That(_pinned3Instantiated, Is.True);
 			}
 
@@ -108,18 +102,49 @@ namespace Konstruktor.Tests
 		{
 		}
 
-		[PinTo(typeof(IDocument3))]
+		[PinnedTo(typeof(IDocument3))]
 		public sealed class PinnedToDocument3
 		{
 			public PinnedToDocument3()
 			{
 				_pinned3Instantiated = true;
 			}
-
-
 		}
 
 		static bool _pinned3Instantiated;
-	}
 
+
+		/*
+			Pinned4 is resolved in the topmost scope and RootDocument4 is the root of the nested scope.
+			This should result in Pinned4 to be reinstantiated in the nested scope.
+		*/
+
+		[Test]
+		public void pinDerivedInNestedScope()
+		{
+			using (var rootScope = k.beginScope())
+			{
+				var p1 = rootScope.resolve<Pinned4>();
+
+				using (var nestedScope = rootScope.beginNestedScope<RootDocument4>())
+				{
+					var p2 = nestedScope.resolve<Pinned4>();
+					Assert.That(p1 != p2);
+				}
+			}
+		}
+
+		sealed class RootDocument4
+		{
+		}
+
+
+		[PinnedTo(typeof(RootDocument4))]
+		sealed class Pinned4
+		{
+			public Pinned4()
+			{
+			}
+		}
+	}
 }

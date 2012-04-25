@@ -43,9 +43,8 @@ namespace Konstruktor.Detail
 				this.Debug("{0}".fmt(argument));
 
 				var nested = _lifetimeScope.beginNestedScope();
-				// the argument is not owned by the nested scope, but needs to be resolvable.
 				nested.store(argument);
-				return nested.resolve<ResultT>(askParent:false);
+				return nested.resolveRoot<ResultT>();
 			};
 
 			return method;

@@ -15,11 +15,11 @@ namespace Konstruktor
 	*/
 
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true)]
-	public sealed class PinToAttribute : Attribute
+	public sealed class PinnedToAttribute : Attribute
 	{
 		public readonly Type TargetType;
 
-		public PinToAttribute(Type targetType)
+		public PinnedToAttribute(Type targetType)
 		{
 			TargetType = targetType;
 		}
