@@ -16,7 +16,9 @@ namespace Konstruktor
 		ILifetimeScope beginNestedScope();
 
 		// internal
+
 		bool tryResolveExisting(Type t, out object o);
+		uint Level { get; }
 	}
 
 	public static class LifetimeScopeExtensions

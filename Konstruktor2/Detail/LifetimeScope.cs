@@ -8,21 +8,17 @@ namespace Konstruktor.Detail
 		readonly object _ = new object();
 		readonly ILifetimeScope _parent_;
 		readonly IKonstruktor _konstruktor;
-		readonly uint _level;
+		public uint Level { get; private set; }
 
 		readonly Dictionary<Type, object> _instances = new Dictionary<Type, object>();
 		readonly IList<IDisposable> _objectsToDispose = new List<IDisposable>();
 
-		public LifetimeScope(IKonstruktor konstruktor)
+		public LifetimeScope(IKonstruktor konstruktor, ILifetimeScope parent_ = null)
 		{
 			_konstruktor = konstruktor;
-		}
-
-		LifetimeScope(IKonstruktor konstruktor, ILifetimeScope parent, uint level)
-			:this(konstruktor)
-		{
-			_parent_ = parent;
-			_level = level;
+			_parent_ = parent_;
+			if (_parent_ != null)
+				Level = _parent_.Level + 1;
 
 			// store the scope itself,
 			// this enables Owned<T> to work without hacks
@@ -112,7 +108,7 @@ namespace Konstruktor.Detail
 
 		public ILifetimeScope beginNestedScope()
 		{
-			return new LifetimeScope(_konstruktor, this, _level+1);
+			return new LifetimeScope(_konstruktor, this);
 		}
 
 		#endregion
@@ -136,7 +132,7 @@ namespace Konstruktor.Detail
 
 		public override string ToString()
 		{
-			return GetType().Name + " " + _level + " " + String.Format("{0,8:X}", (uint)GetHashCode());
+			return GetType().Name + " " + Level + " " + String.Format("{0,8:X}", (uint)GetHashCode());
 		}
 	}
 }
