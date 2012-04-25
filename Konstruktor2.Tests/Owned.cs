@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using NUnit.Framework;
 
-namespace Konstruktor.Tests
+namespace Konstruktor2.Tests
 {
 	[TestFixture]
 	sealed class Owned

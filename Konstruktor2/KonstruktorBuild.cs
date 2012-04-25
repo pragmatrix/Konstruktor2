@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
-using Konstruktor.Detail;
+using Konstruktor2.Detail;
 
-namespace Konstruktor
+namespace Konstruktor2
 {
 	partial class Konstruktor
 	{

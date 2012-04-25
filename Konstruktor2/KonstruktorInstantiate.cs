@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Konstruktor.Detail;
+using Konstruktor2.Detail;
 
-namespace Konstruktor
+namespace Konstruktor2
 {
 	partial class Konstruktor
 	{

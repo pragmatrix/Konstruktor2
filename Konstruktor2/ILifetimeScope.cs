@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Konstruktor
+namespace Konstruktor2
 {
 	public interface ILifetimeScope : IDisposable
 	{

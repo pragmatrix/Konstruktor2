@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Konstruktor
+namespace Konstruktor2
 {
 	public sealed class Owned<T> : IDisposable
 	{

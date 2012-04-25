@@ -1,6 +1,6 @@
 using System;
 
-namespace Konstruktor
+namespace Konstruktor2
 {
 	/*
 		A class that is attributed wuth a DefaultImplementationAttribute is 

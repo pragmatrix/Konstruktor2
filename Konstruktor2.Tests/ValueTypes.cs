@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace Konstruktor.Tests
+namespace Konstruktor2.Tests
 {
 	[TestFixture]
 	sealed class ValueTypes

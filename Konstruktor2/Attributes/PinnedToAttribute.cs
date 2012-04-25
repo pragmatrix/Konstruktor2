@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Konstruktor
+namespace Konstruktor2
 {
 	/*
 		A pinned attribute instructs Konstruktor to instantiate the attribted class 

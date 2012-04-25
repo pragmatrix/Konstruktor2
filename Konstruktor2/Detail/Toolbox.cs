@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace Konstruktor.Detail
+namespace Konstruktor2.Detail
 {
 	static class StringFormatExtensions
 	{

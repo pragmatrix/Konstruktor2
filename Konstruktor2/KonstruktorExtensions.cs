@@ -1,4 +1,4 @@
-﻿namespace Konstruktor
+﻿namespace Konstruktor2
 {
 	public static class KonstruktorExtensions
 	{

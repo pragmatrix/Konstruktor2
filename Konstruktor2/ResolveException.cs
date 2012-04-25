@@ -1,7 +1,7 @@
 ﻿using System;
-using Konstruktor.Detail;
+using Konstruktor2.Detail;
 
-namespace Konstruktor
+namespace Konstruktor2
 {
 	[Serializable]
 	public sealed class ResolveException : Exception

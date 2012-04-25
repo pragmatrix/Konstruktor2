@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using NUnit.Framework;
 
-namespace Konstruktor.Tests
+namespace Konstruktor2.Tests
 {
 
 	[TestFixture]

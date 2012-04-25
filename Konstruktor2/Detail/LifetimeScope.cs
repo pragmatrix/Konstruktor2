@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Konstruktor.Detail
+namespace Konstruktor2.Detail
 {
 	sealed class LifetimeScope : ILifetimeScope
 	{

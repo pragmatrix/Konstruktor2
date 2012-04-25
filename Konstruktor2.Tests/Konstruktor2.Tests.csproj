@@ -8,7 +8,7 @@
     <ProjectGuid>{3EF3D4D2-2667-413A-84F6-1B8E65DC1CD6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Konstruktor.Tests</RootNamespace>
+    <RootNamespace>Konstruktor2.Tests</RootNamespace>
     <AssemblyName>Konstruktor.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

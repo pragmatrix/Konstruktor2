@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using Konstruktor.Detail;
+using Konstruktor2.Detail;
 
-namespace Konstruktor
+namespace Konstruktor2
 {
 	public sealed partial class Konstruktor : IKonstruktor
 	{

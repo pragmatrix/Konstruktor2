@@ -1,6 +1,6 @@
 using System;
 
-namespace Konstruktor.Detail
+namespace Konstruktor2.Detail
 {
 	interface IDisposeChain : IDisposable
 	{
