@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Attributes\DefaultImplementationAttribute.cs" />
     <Compile Include="Attributes\GeneratorMethodAttribute.cs" />
+    <Compile Include="Attributes\PinToAttribute.cs" />
     <Compile Include="Attributes\PreferredConstructorAttribute.cs" />
     <Compile Include="Konstruktor.cs" />
     <Compile Include="KonstruktorBuild.cs" />
@@ -57,9 +58,9 @@
     <Compile Include="Detail\Func1Factory.cs" />
     <Compile Include="Detail\Func2Factory.cs" />
     <Compile Include="Detail\IDisposeChain.cs" />
-    <Compile Include="Detail\KonstruktorScope.cs" />
+    <Compile Include="Detail\LifetimeScope.cs" />
     <Compile Include="Detail\Toolbox.cs" />
-    <Compile Include="IKonstruktorScope.cs" />
+    <Compile Include="ILifetimeScope.cs" />
     <Compile Include="Owned.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResolveException.cs" />

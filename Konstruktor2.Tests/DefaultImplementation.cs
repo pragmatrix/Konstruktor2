@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Konstruktor.Tests
 {
 	[TestFixture]
-	public sealed class ScanAssembly
+	public sealed class DefaultImplementation
 	{
 		interface InterfaceBase
 		{}

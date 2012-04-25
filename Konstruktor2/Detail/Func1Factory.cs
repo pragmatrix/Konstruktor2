@@ -5,7 +5,7 @@ namespace Konstruktor.Detail
 {
 	static class Func1Factory
 	{
-		public static object instantiate(Type t, IKonstruktorScope konstruktorScope)
+		public static object instantiate(Type t, ILifetimeScope lifetimeScope)
 		{
 			Debug.Assert(t.GetGenericTypeDefinition() == typeof(Func<>));
 			var funcArgs = t.GetGenericArguments();
@@ -16,7 +16,7 @@ namespace Konstruktor.Detail
 			var typeDef = typeof(Func1Factory<>);
 			var factoryType = typeDef.MakeGenericType( resultType);
 
-			var factoryInstance = (IFunc1Factory)Activator.CreateInstance(factoryType, konstruktorScope);
+			var factoryInstance = (IFunc1Factory)Activator.CreateInstance(factoryType, lifetimeScope);
 			return factoryInstance.resolveFactoryMethod();
 		}
 	}
@@ -28,11 +28,11 @@ namespace Konstruktor.Detail
 
 	sealed class Func1Factory<ResultT> : IFunc1Factory
 	{
-		readonly IKonstruktorScope _konstruktorScope;
+		readonly ILifetimeScope _lifetimeScope;
 
-		public Func1Factory(IKonstruktorScope konstruktorScope)
+		public Func1Factory(ILifetimeScope lifetimeScope)
 		{
-			_konstruktorScope = konstruktorScope;
+			_lifetimeScope = lifetimeScope;
 		}
 
 		public object resolveFactoryMethod()
@@ -41,8 +41,8 @@ namespace Konstruktor.Detail
 			{
 				this.Debug("");
 				
-				var nested = _konstruktorScope.beginNestedScope();
-				return nested.resolveLocal<ResultT>();
+				var nested = _lifetimeScope.beginNestedScope();
+				return nested.resolve<ResultT>(askParent:false);
 			};
 
 			return method;

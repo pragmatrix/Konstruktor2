@@ -3,22 +3,22 @@ using System.Collections.Generic;
 
 namespace Konstruktor.Detail
 {
-	sealed class KonstruktorScope : IKonstruktorScope
+	sealed class LifetimeScope : ILifetimeScope
 	{
 		readonly object _ = new object();
-		readonly IKonstruktorScope _parent_;
+		readonly ILifetimeScope _parent_;
 		readonly IKonstruktor _konstruktor;
 		readonly uint _level;
 
 		readonly Dictionary<Type, object> _instances = new Dictionary<Type, object>();
 		readonly IList<IDisposable> _objectsToDispose = new List<IDisposable>();
 
-		public KonstruktorScope(IKonstruktor konstruktor)
+		public LifetimeScope(IKonstruktor konstruktor)
 		{
 			_konstruktor = konstruktor;
 		}
 
-		KonstruktorScope(IKonstruktor konstruktor, IKonstruktorScope parent, uint level)
+		LifetimeScope(IKonstruktor konstruktor, ILifetimeScope parent, uint level)
 			:this(konstruktor)
 		{
 			_parent_ = parent;
@@ -27,7 +27,7 @@ namespace Konstruktor.Detail
 			// store the scope itself,
 			// this enables Owned<T> to work without hacks
 			
-			_instances.Add(typeof (IKonstruktorScope), this);
+			_instances.Add(typeof (ILifetimeScope), this);
 		}
 
 		#region Public / Thread Safe
@@ -59,18 +59,22 @@ namespace Konstruktor.Detail
 			_instances.Clear();
 		}
 
-		public object resolve(Type type)
+		public object resolve(Type type, bool askParent)
 		{
 			lock (_)
 			{
 				object instance_;
-				if (internalTryResolveExisting(type, out instance_))
+				if (internalTryResolveExisting(type, out instance_, askParent))
 					return instance_;
 
-				var newObj = _konstruktor.build(type, this);
+				var newInstance = _konstruktor.build(this, type);
+				internalStore(type, newInstance);
 
-				internalStore(type, newObj);
-				return newObj;
+				var pins = _konstruktor.pinsOf(type);
+				foreach (var pin in pins)
+					resolve(pin, askParent: false);
+
+				return newInstance;
 			}
 		}
 
@@ -78,21 +82,7 @@ namespace Konstruktor.Detail
 		{
 			lock (_)
 			{
-				return internalTryResolveExisting(type, out o);
-			}
-		}
-
-		public object resolveLocal(Type type)
-		{
-			lock (_)
-			{
-				object o;
-				if (_instances.TryGetValue(type, out o))
-					return o;
-
-				var newObj = _konstruktor.build(type, this);
-				internalStore(type, newObj);
-				return newObj;
+				return internalTryResolveExisting(type, out o, askParent:true);
 			}
 		}
 		
@@ -120,19 +110,19 @@ namespace Konstruktor.Detail
 				_objectsToDispose.Add(disp);
 		}
 
-		public IKonstruktorScope beginNestedScope()
+		public ILifetimeScope beginNestedScope()
 		{
-			return new KonstruktorScope(_konstruktor, this, _level+1);
+			return new LifetimeScope(_konstruktor, this, _level+1);
 		}
 
 		#endregion
 
-		bool internalTryResolveExisting(Type type, out object instance)
+		bool internalTryResolveExisting(Type type, out object instance, bool askParent)
 		{
 			if (_instances.TryGetValue(type, out instance))
 				return true;
 
-			if (_parent_ == null)
+			if (!askParent || _parent_ == null)
 				return false;
 
 			return _parent_.tryResolveExisting(type, out instance);

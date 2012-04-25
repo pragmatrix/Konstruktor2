@@ -9,15 +9,17 @@ namespace Konstruktor
 {
 	interface IKonstruktor
 	{
-		object build(Type t, IKonstruktorScope konstruktorScope);
+		object build(ILifetimeScope lifetimeScope, Type t);
+		IEnumerable<Type> pinsOf(Type targetType);
 	}
 
 	public sealed partial class Konstruktor : IKonstruktor
 	{
-		readonly Dictionary<Type, Func<IKonstruktorScope, object>> _explicitGenerators = new Dictionary<Type, Func<IKonstruktorScope, object>>();
+		readonly Dictionary<Type, Func<ILifetimeScope, object>> _explicitGenerators = new Dictionary<Type, Func<ILifetimeScope, object>>();
 		readonly Dictionary<Type, Type> _interfaceToImplementation = new Dictionary<Type, Type>();
 		readonly Dictionary<Type, MethodInfo> _generatorMethods = new Dictionary<Type, MethodInfo>();
 		readonly Dictionary<Type, Type[]> _preferredConstructor = new Dictionary<Type, Type[]>();
+		readonly Dictionary<Type, List<Type>> _pins = new Dictionary<Type, List<Type>>(); 
 
 #if DEBUG
 		bool _frozen;
@@ -45,7 +47,7 @@ namespace Konstruktor
 				_konstruktor.mapInterfaceToImplementation(typeof (InterfaceT), typeof (ImplementationT));
 			}
 
-			public void generate(Func<IKonstruktorScope, InterfaceT> generator)
+			public void generate(Func<ILifetimeScope, InterfaceT> generator)
 			{
 				_konstruktor.registerGenerator(generator);
 			}
@@ -77,7 +79,7 @@ namespace Konstruktor
 			_interfaceToImplementation[interfaceType] = implementationType;
 		}
 
-		public void registerGenerator<GeneratedT>(Func<IKonstruktorScope, GeneratedT> constructor)
+		public void registerGenerator<GeneratedT>(Func<ILifetimeScope, GeneratedT> constructor)
 		{
 			_explicitGenerators.Add(typeof(GeneratedT), scope => constructor(scope));
 		}
@@ -110,26 +112,36 @@ namespace Konstruktor
 
 		public void scanAssembly(Assembly assembly)
 		{
-			var defaultAttr = typeof (DefaultImplementationAttribute);
-
 			foreach (var implementationType in assembly.GetTypes())
 			{
-				var attrs = (DefaultImplementationAttribute[]) implementationType.GetCustomAttributes(defaultAttr, false);
-				foreach (var attr in attrs)
+				var defImplementationAttributes = implementationType.GetCustomAttributes(false);
+				foreach (var attr in defImplementationAttributes)
 				{
-					var interfaceTypes = attr.InterfaceTypes;
-					if (interfaceTypes.Length == 0)
-					{
-						registerImplementation(implementationType);
-						continue;
-					}
+					var defaultImplementation = attr as DefaultImplementationAttribute;
+					if (defaultImplementation != null)
+						registerDefaultImplementationAttribute(implementationType, defaultImplementation.InterfaceTypes);
 
-					foreach (var interfaceType in interfaceTypes)
+					var pinToAttribute = attr as PinToAttribute;
+					if (pinToAttribute != null)
 					{
-						Debug.Assert(interfaceType.IsAssignableFrom(implementationType));
-						mapInterfaceToImplementation(interfaceType, implementationType);
+						pinTo(implementationType, pinToAttribute.TargetType);
 					}
 				}
+			}
+		}
+
+		void registerDefaultImplementationAttribute(Type implementationType, Type[] interfaces)
+		{
+			if (interfaces.Length == 0)
+			{
+				registerImplementation(implementationType);
+				return;
+			}
+
+			foreach (var interfaceType in interfaces)
+			{
+				Debug.Assert(interfaceType.IsAssignableFrom(implementationType));
+				mapInterfaceToImplementation(interfaceType, implementationType);
 			}
 		}
 
@@ -139,6 +151,22 @@ namespace Konstruktor
 			{
 				mapInterfaceToImplementation(interfaceType, implementationType);
 			}
+		}
+
+		void pinTo(Type pinnedType, Type targetType)
+		{
+			List<Type> pinnedTypes;
+			if (!_pins.TryGetValue(targetType, out pinnedTypes))
+				_pins.Add(targetType, pinnedTypes = new List<Type>());
+			pinnedTypes.Add(pinnedType);
+		}
+
+		IEnumerable<Type> IKonstruktor.pinsOf(Type targetType)
+		{
+			List<Type> pinnedTypes;
+			return _pins.TryGetValue(targetType, out pinnedTypes) 
+				? pinnedTypes 
+				: Enumerable.Empty<Type>();
 		}
 
 		// http://stackoverflow.com/questions/5318685/get-only-direct-interface-instead-of-all
@@ -151,12 +179,12 @@ namespace Konstruktor
 					(allInterfaces.SelectMany(t => t.GetInterfaces()));
 		}
 
-		public IKonstruktorScope beginScope()
+		public ILifetimeScope beginScope()
 		{
 #if DEBUG
 			_frozen = true;
 #endif
-			return new KonstruktorScope(this);
+			return new LifetimeScope(this);
 		}
 
 	}

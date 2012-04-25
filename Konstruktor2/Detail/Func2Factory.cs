@@ -5,7 +5,7 @@ namespace Konstruktor.Detail
 {
 	static class Func2Factory
 	{
-		public static object instantiate(Type t, IKonstruktorScope konstruktorScope)
+		public static object instantiate(Type t, ILifetimeScope lifetimeScope)
 		{
 			Debug.Assert(t.GetGenericTypeDefinition() == typeof(Func<,>));
 			var funcArgs = t.GetGenericArguments();
@@ -17,7 +17,7 @@ namespace Konstruktor.Detail
 			var typeDef = typeof(Func2Factory<,>);
 			var factoryType = typeDef.MakeGenericType(argumentType, resultType);
 
-			var factoryInstance = (IFunc2Factory)Activator.CreateInstance(factoryType, konstruktorScope);
+			var factoryInstance = (IFunc2Factory)Activator.CreateInstance(factoryType, lifetimeScope);
 			return factoryInstance.resolveFactoryMethod();
 		}
 	}
@@ -29,11 +29,11 @@ namespace Konstruktor.Detail
 
 	sealed class Func2Factory<ArgT, ResultT> : IFunc2Factory
 	{
-		readonly IKonstruktorScope _konstruktorScope;
+		readonly ILifetimeScope _lifetimeScope;
 
-		public Func2Factory(IKonstruktorScope konstruktorScope)
+		public Func2Factory(ILifetimeScope lifetimeScope)
 		{
-			_konstruktorScope = konstruktorScope;
+			_lifetimeScope = lifetimeScope;
 		}
 
 		public object resolveFactoryMethod()
@@ -42,10 +42,10 @@ namespace Konstruktor.Detail
 			{
 				this.Debug("{0}".fmt(argument));
 
-				var nested = _konstruktorScope.beginNestedScope();
+				var nested = _lifetimeScope.beginNestedScope();
 				// the argument is not owned by the nested scope, but needs to be resolvable.
 				nested.store(argument);
-				return nested.resolveLocal<ResultT>();
+				return nested.resolve<ResultT>(askParent:false);
 			};
 
 			return method;
