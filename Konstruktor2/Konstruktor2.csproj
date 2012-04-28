@@ -47,6 +47,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activator.cs" />
     <Compile Include="Attributes\DefaultImplementationAttribute.cs" />
     <Compile Include="Attributes\GeneratorMethodAttribute.cs" />
     <Compile Include="Attributes\PinnedToAttribute.cs" />
