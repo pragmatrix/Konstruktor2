@@ -126,8 +126,9 @@ namespace Konstruktor2.Tests
 			{
 				var p1 = rootScope.resolve<Pinned4>();
 
-				using (var nestedScope = rootScope.beginNestedScope<RootDocument4>())
+				using (var nestedScope = rootScope.beginNestedScope())
 				{
+					nestedScope.resolveRoot<RootDocument4>();
 					var p2 = nestedScope.resolve<Pinned4>();
 					Assert.That(p1 != p2);
 				}

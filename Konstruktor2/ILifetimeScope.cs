@@ -34,12 +34,5 @@ namespace Konstruktor2
 		{
 			return (TypeT)scope.resolveRoot(typeof(TypeT));
 		}
-
-		public static ILifetimeScope beginNestedScope<RootT>(this ILifetimeScope lifetimeScope)
-		{
-			var scope = lifetimeScope.beginNestedScope();
-			scope.resolveRoot<RootT>();
-			return scope;
-		}
 	}
 }

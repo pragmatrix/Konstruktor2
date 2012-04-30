@@ -42,7 +42,16 @@ namespace Konstruktor2.Detail
 				this.Debug("");
 				
 				var nested = _lifetimeScope.beginNestedScope();
-				return nested.resolveRoot<ResultT>();
+				try
+				{
+					return nested.resolveRoot<ResultT>();
+				}
+				catch (Exception)
+				{
+					nested.Dispose();
+					throw;
+				}
+				
 			};
 
 			return method;
