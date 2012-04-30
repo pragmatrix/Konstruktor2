@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Konstruktor2.Detail;
 
 namespace Konstruktor2
 {
@@ -8,6 +9,16 @@ namespace Konstruktor2
 	{
 		readonly Func<ParamT, Owned<ResultT>> _generator;
 		Owned<ResultT> _generated_;
+		ParamT _param;
+
+		public ParamT Param
+		{
+			get
+			{
+				Debug.Assert(IsActive);
+				return _param;
+			}
+		}
 
 		public ResultT Instance_
 		{
@@ -30,19 +41,43 @@ namespace Konstruktor2
 				deactivate();
 		}
 
-		public virtual void activate(ParamT param)
+		public void activate(ParamT param)
 		{
 			if (IsActive)
 				deactivate();
 
+			_param = param;
 			_generated_ = _generator(param);
+
+			activated(param);
+
+			Activated.raise(param);
 		}
 
-		public virtual void deactivate()
+
+		public void deactivate()
 		{
-			Debug.Assert(_generated_ != null);
+			if (_generated_ == null)
+				return;
+
+			Deactivating.raise();
+
+			deactivating();
+
 			_generated_.Dispose();
 			_generated_ = null;
+			_param = default(ParamT);
 		}
+
+		protected virtual void activated(ParamT param)
+		{
+		}
+
+		protected virtual void deactivating()
+		{
+		}
+
+		public event Action<ParamT> Activated;
+		public event Action Deactivating;
 	}
 }
