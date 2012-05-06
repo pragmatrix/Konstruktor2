@@ -52,6 +52,7 @@ namespace Konstruktor2
 			activated(param);
 
 			Activated.raise(param);
+			ActivationChanged.raise();
 		}
 
 
@@ -67,6 +68,8 @@ namespace Konstruktor2
 			_generated_.Dispose();
 			_generated_ = null;
 			_param = default(ParamT);
+
+			ActivationChanged.raise();
 		}
 
 		protected virtual void activated(ParamT param)
@@ -79,5 +82,7 @@ namespace Konstruktor2
 
 		public event Action<ParamT> Activated;
 		public event Action Deactivating;
+
+		public event Action ActivationChanged;
 	}
 }
