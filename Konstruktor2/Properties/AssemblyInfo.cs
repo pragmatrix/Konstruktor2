@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Armin Sander")]
 [assembly: AssemblyProduct("Konstruktor")]
-[assembly: AssemblyCopyright("Copyright © 2011 Armin Sander")]
+[assembly: AssemblyCopyright("Copyright © 2012 Armin Sander")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
