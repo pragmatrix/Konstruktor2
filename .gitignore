@@ -7,3 +7,4 @@
 obj/
 bin/
 *.DotSettings
+/.DS_Store
