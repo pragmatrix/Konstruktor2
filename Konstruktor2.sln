@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konstruktor2", "Konstruktor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konstruktor2.Tests", "Konstruktor2.Tests\Konstruktor2.Tests.csproj", "{3EF3D4D2-2667-413A-84F6-1B8E65DC1CD6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konstruktor2.Portable", "Konstruktor2\Konstruktor2.Portable.csproj", "{6063C0AE-4F31-4344-8222-BBE0A0D3D3C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{3EF3D4D2-2667-413A-84F6-1B8E65DC1CD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EF3D4D2-2667-413A-84F6-1B8E65DC1CD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EF3D4D2-2667-413A-84F6-1B8E65DC1CD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6063C0AE-4F31-4344-8222-BBE0A0D3D3C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6063C0AE-4F31-4344-8222-BBE0A0D3D3C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6063C0AE-4F31-4344-8222-BBE0A0D3D3C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6063C0AE-4F31-4344-8222-BBE0A0D3D3C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

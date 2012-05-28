@@ -45,8 +45,7 @@ namespace Konstruktor2
 				resolvedObjects[p] = obj;
 			}
 
-			var instance = FormatterServices.GetUninitializedObject(t);
-			constructor.Invoke(instance, resolvedObjects);
+			var instance = constructor.Invoke(resolvedObjects);
 
 			lifetimeScope.Debug("inst {2,8:X}: {0} => {1}".fmt(t.Name, instance, (uint)instance.GetHashCode()));
 
