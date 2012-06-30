@@ -30,6 +30,20 @@ namespace Konstruktor2
 			return (T) lifetimeScope.resolve(typeof (T));
 		}
 
+		/// Try get an instance that already exists in the lifetime scope.
+
+		public static bool tryGet<T>(this ILifetimeScope lifetimeScope, out T value)
+		{
+			object r;
+			if (lifetimeScope.tryResolveExisting(typeof (T), out r))
+			{
+				value = (T) r;
+				return true;
+			}
+			value = default(T);
+			return false;
+		}
+
 		public static TypeT resolveRoot<TypeT>(this ILifetimeScope scope)
 		{
 			return (TypeT)scope.resolveRoot(typeof(TypeT));
