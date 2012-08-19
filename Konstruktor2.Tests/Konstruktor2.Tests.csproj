@@ -80,9 +80,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Konstruktor2\Konstruktor2.csproj">
-      <Project>{680D590A-F8D3-413D-884C-0C4D8136F8D9}</Project>
-      <Name>Konstruktor2</Name>
+    <ProjectReference Include="..\Konstruktor2\Konstruktor2.Portable.csproj">
+      <Project>{6063C0AE-4F31-4344-8222-BBE0A0D3D3C1}</Project>
+      <Name>Konstruktor2.Portable</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
