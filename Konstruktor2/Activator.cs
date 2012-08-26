@@ -46,6 +46,9 @@ namespace Konstruktor2
 			if (IsActive)
 				deactivate();
 
+			if (_disablingRequests != 0)
+				return;
+
 			_param = param;
 			_generated_ = _generator(param);
 
@@ -84,5 +87,17 @@ namespace Konstruktor2
 		public event Action Deactivating;
 
 		public event Action ActivationChanged;
+
+		int _disablingRequests;
+
+		public IDisposable beginDisable()
+		{
+			if (IsActive)
+				deactivate();
+
+			++_disablingRequests;
+
+			return new DisposeAction(() => --_disablingRequests);
+		}
 	}
 }
