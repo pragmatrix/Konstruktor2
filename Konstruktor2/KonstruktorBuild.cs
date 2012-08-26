@@ -15,6 +15,8 @@ namespace Konstruktor2
 		object IKonstruktor.build(ILifetimeScope lifetimeScope, Type t)
 		{
 #if DEBUG
+			lifetimeScope.Debug("building {0}".fmt(t.Name));
+
 			Debug.Assert(_frozen);
 #endif
 			Func<ILifetimeScope, object> explicitGenerator;
