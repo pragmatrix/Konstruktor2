@@ -35,7 +35,7 @@ namespace Konstruktor2
 			_generator = generator;
 		}
 
-		public void Dispose()
+		public virtual void Dispose()
 		{
 			if (IsActive)
 				deactivate();
