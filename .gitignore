@@ -8,3 +8,7 @@ obj/
 bin/
 *.DotSettings
 /.DS_Store
+*.ncrunchproject
+*.ncrunchsolution
+/.vs/
+/_NCrunch_*
