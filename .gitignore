@@ -12,3 +12,5 @@ bin/
 *.ncrunchsolution
 /.vs/
 /_NCrunch_*
+/.paket/Paket.Restore.targets
+/paket-files/

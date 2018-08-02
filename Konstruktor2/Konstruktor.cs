@@ -52,19 +52,23 @@ namespace Konstruktor2
 #if DEBUG
 			Debug.Assert(!_frozen);
 #endif
-			if (!interfaceType.IsInterface)
+
+			var interfaceTypeInfo = interfaceType.GetTypeInfo();
+			var implementationTypeInfo = implementationType.GetTypeInfo();
+
+			if (!interfaceTypeInfo.IsInterface)
 				throw new ArgumentException("must be an interface", "interfaceType");
 
-			if (implementationType.IsInterface)
+			if (implementationTypeInfo.IsInterface)
 				throw new ArgumentException("must be an implementation type", "implementationType");
 
-			if (interfaceType.IsGenericTypeDefinition != implementationType.IsGenericTypeDefinition)
+			if (interfaceTypeInfo.IsGenericTypeDefinition != implementationTypeInfo.IsGenericTypeDefinition)
 				throw new ArgumentException("none or both must be open generic types", "interfaceType, implementationType");
 
-			if (interfaceType.IsGenericTypeDefinition && interfaceType.GetGenericArguments().Length != implementationType.GetGenericArguments().Length)
+			if (interfaceTypeInfo.IsGenericTypeDefinition && interfaceTypeInfo.GetGenericArguments().Length != implementationTypeInfo.GetGenericArguments().Length)
 				throw new ArgumentException("number of generic arguments do not match", "interfaceType, implementationType");
 
-			if (!interfaceType.IsGenericTypeDefinition && !interfaceType.IsAssignableFrom(implementationType))
+			if (!interfaceTypeInfo.IsGenericTypeDefinition && !interfaceTypeInfo.IsAssignableFrom(implementationType))
 				throw new ArgumentException("interface is not implemented by the implementation", "interfaceType, implementationType");
 
 			if (_interfaceToImplementation.ContainsKey(interfaceType))
@@ -88,13 +92,15 @@ namespace Konstruktor2
 #if DEBUG
 			Debug.Assert(!_frozen);
 #endif
-			var methods = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+			var typeInfo = type.GetTypeInfo();
+			var methods = typeInfo.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 			var factoryMethods = from m in methods where m.hasAttribute<GeneratorMethodAttribute>() select m;
 
 			foreach (var fm in factoryMethods)
 			{
 				var returnType = fm.ReturnType;
-				var typeDefinition = returnType.IsGenericType ? returnType.GetGenericTypeDefinition() : returnType;
+				var returnTypeInfo = returnType.GetTypeInfo();
+				var typeDefinition = returnTypeInfo.IsGenericType ? returnType.GetGenericTypeDefinition() : returnType;
 				_generatorMethods.Add(typeDefinition, fm);
 			}
 		}
@@ -108,7 +114,9 @@ namespace Konstruktor2
 		{
 			foreach (var implementationType in assembly.GetTypes())
 			{
-				var defImplementationAttributes = implementationType.GetCustomAttributes(false);
+				var implementationTypeInfo = implementationType.GetTypeInfo();
+
+				var defImplementationAttributes = implementationTypeInfo.GetCustomAttributes(false);
 				foreach (var attr in defImplementationAttributes)
 				{
 					var defaultImplementation = attr as DefaultImplementationAttribute;
@@ -134,7 +142,8 @@ namespace Konstruktor2
 
 			foreach (var interfaceType in interfaces)
 			{
-				Debug.Assert(interfaceType.IsAssignableFrom(implementationType));
+				var interfaceTypeInfo = interfaceType.GetTypeInfo();
+				Debug.Assert(interfaceTypeInfo.IsAssignableFrom(implementationType));
 				mapInterfaceToImplementation(interfaceType, implementationType);
 			}
 		}
@@ -173,10 +182,11 @@ namespace Konstruktor2
 
 		static IEnumerable<Type> getImmediateInterfaces(Type implementationType)
 		{
-			var allInterfaces = implementationType.GetInterfaces();
+			var implementationTypeInfo = implementationType.GetTypeInfo();
+			var allInterfaces = implementationTypeInfo.GetInterfaces();
 			return
 				allInterfaces.Except
-					(allInterfaces.SelectMany(t => t.GetInterfaces()));
+					(allInterfaces.SelectMany(t => t.GetTypeInfo().GetInterfaces()));
 		}
 
 		public ILifetimeScope beginScope()

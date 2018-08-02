@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Konstruktor2.Detail
 {
@@ -8,7 +9,8 @@ namespace Konstruktor2.Detail
 		public static object instantiate(Type t, ILifetimeScope lifetimeScope)
 		{
 			Debug.Assert(t.GetGenericTypeDefinition() == typeof(Func<>));
-			var funcArgs = t.GetGenericArguments();
+			var ti = t.GetTypeInfo();
+			var funcArgs = ti.GetGenericArguments();
 			Debug.Assert(funcArgs.Length == 1);
 
 			var resultType = funcArgs[0];

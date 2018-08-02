@@ -35,12 +35,12 @@ namespace Konstruktor2.Tests
 			}
 		}
 
-		[Test, ExpectedException(typeof(ResolveException))]
+		[Test]
 		public void testIfOnlyInterface1IsRegistered()
 		{
 			using (var scope = b.beginScope())
 			{
-				scope.resolve<InterfaceBase>();
+				Assert.That(() => scope.resolve<InterfaceBase>(), Throws.TypeOf<ResolveException>());
 			}
 		}
 
@@ -63,12 +63,12 @@ namespace Konstruktor2.Tests
 			}
 		}
 
-		[Test, ExpectedException(typeof(ResolveException))]
+		[Test]
 		public void testIfOnlySpecificInterfaceIsRegistered()
 		{
 			using (var scope = b.beginScope())
 			{
-				scope.resolve<Interface2>();
+				Assert.That(() => scope.resolve<Interface2>(), Throws.TypeOf<ResolveException>());
 			}
 		}
 
@@ -97,12 +97,12 @@ namespace Konstruktor2.Tests
 			}
 		}
 
-		[Test, ExpectedException(typeof(ResolveException))]
+		[Test]
 		public void testIfOnlySpecifiedMultipleInterfacesAreRegistered()
 		{
 			using (var scope = b.beginScope())
 			{
-				scope.resolve<Interface6>();
+				Assert.That(() => scope.resolve<Interface6>(), Throws.TypeOf<ResolveException>());
 			}
 		}
 
@@ -130,12 +130,12 @@ namespace Konstruktor2.Tests
 			}
 		}
 
-		[Test, ExpectedException(typeof(ResolveException))]
+		[Test]
 		public void testIfOnlySpecifiedMultipleInterfacesAreRegisteredParam()
 		{
 			using (var scope = b.beginScope())
 			{
-				scope.resolve<Interface9>();
+				Assert.That(() => scope.resolve<Interface9>(), Throws.TypeOf<ResolveException>());
 			}
 		}
 	}
