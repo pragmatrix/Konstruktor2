@@ -1,27 +1,17 @@
-DIST_NAME=Konstruktor_${REVISION}
-DIST_SRC=${DIST_NAME}_src
-DIST_BIN=${DIST_NAME}_bin
+MSB=MSBuild.exe /verbosity:m
+paket=.paket/paket.exe
 
-MSB=msbuild.exe /verbosity:m
-DIST_FILES=Release/Konstruktor.dll Release/Konstruktor.pdb
+.PHONY: pack
+pack: build
+	mkdir -p tmp
+	rm -f tmp/*.nupkg
+	${paket} pack tmp/
 
-.PHONY: package
-package: build packagesource packagebinary
-
-.PHONY: packagesource
-packagesource: 
-	rm -rf /tmp/${DIST_SRC}
-	svn export . /tmp/${DIST_SRC}
-	cd /tmp && rm -f ${DIST_SRC}.zip && zip -r ${DIST_SRC}.zip ${DIST_SRC}
+.PHONY: publish
+publish: pack
+	${paket} push tmp/*.nupkg --url https://www.myget.org/F/pragmatrix/api/v2/package --api-key ${MYGETAPIKEY}
 
 .PHONY: build
 build:
-	${MSB} Konstruktor.sln /p:Configuration=Release /target:Konstruktor:Rebuild	
-
-.PHONY: packagebinary
-packagebinary:
-	rm -rf /tmp/${DIST_BIN}
-	mkdir /tmp/${DIST_BIN}
-	cp ${DIST_FILES} /tmp/${DIST_BIN}
-	cd /tmp && rm -f ${DIST_BIN}.zip && zip -r ${DIST_BIN}.zip ${DIST_BIN}
+	${MSB} Konstruktor2.sln -p:Configuration=Release -t:Konstruktor2:Rebuild
 
