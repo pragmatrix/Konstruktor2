@@ -15,5 +15,5 @@ Konstruktor does not support:
 - field / property injection (though it can be done by specifying generator methods).
 - XML configuration
 
-For more information and some documentation snippets, take a look at the [unit tests](https://github.com/pragmatrix/Konstruktor2/tree/master/Konstruktor2.Tests) or check out [my blog](http://www.replicator.org/category/project/konstruktor).
+For more information and some documentation snippets, take a look at the [unit tests](https://github.com/pragmatrix/Konstruktor2/tree/master/Konstruktor2.Tests).
 
