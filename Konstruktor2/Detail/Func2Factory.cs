@@ -40,7 +40,7 @@ namespace Konstruktor2.Detail
 
 		public object resolveFactoryMethod()
 		{
-			Func<ArgT, ResultT> method = argument =>
+			ResultT method(ArgT argument)
 			{
 				this.Debug("{0}".fmt(argument));
 
@@ -55,9 +55,9 @@ namespace Konstruktor2.Detail
 					nested.Dispose();
 					throw;
 				}
-			};
+			}
 
-			return method;
+			return (Func<ArgT, ResultT>) method;
 		}
 	}
 }

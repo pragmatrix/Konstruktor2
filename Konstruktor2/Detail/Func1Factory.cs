@@ -39,10 +39,10 @@ namespace Konstruktor2.Detail
 
 		public object resolveFactoryMethod()
 		{
-			Func<ResultT> method = () =>
+			ResultT method()
 			{
 				this.Debug("");
-				
+
 				var nested = _lifetimeScope.beginNestedScope();
 				try
 				{
@@ -53,10 +53,9 @@ namespace Konstruktor2.Detail
 					nested.Dispose();
 					throw;
 				}
-				
-			};
+			}
 
-			return method;
+			return (Func<ResultT>) method;
 		}
 	}
 }

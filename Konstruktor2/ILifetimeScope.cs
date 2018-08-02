@@ -34,8 +34,7 @@ namespace Konstruktor2
 
 		public static bool tryGet<T>(this ILifetimeScope lifetimeScope, out T value)
 		{
-			object r;
-			if (lifetimeScope.tryResolveExisting(typeof (T), out r))
+			if (lifetimeScope.tryResolveExisting(typeof (T), out var r))
 			{
 				value = (T) r;
 				return true;

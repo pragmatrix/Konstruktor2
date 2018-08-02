@@ -57,10 +57,10 @@ namespace Konstruktor2
 			var implementationTypeInfo = implementationType.GetTypeInfo();
 
 			if (!interfaceTypeInfo.IsInterface)
-				throw new ArgumentException("must be an interface", "interfaceType");
+				throw new ArgumentException("must be an interface", nameof(interfaceType));
 
 			if (implementationTypeInfo.IsInterface)
-				throw new ArgumentException("must be an implementation type", "implementationType");
+				throw new ArgumentException("must be an implementation type", nameof(implementationType));
 
 			if (interfaceTypeInfo.IsGenericTypeDefinition != implementationTypeInfo.IsGenericTypeDefinition)
 				throw new ArgumentException("none or both must be open generic types", "interfaceType, implementationType");
@@ -119,14 +119,14 @@ namespace Konstruktor2
 				var defImplementationAttributes = implementationTypeInfo.GetCustomAttributes(false);
 				foreach (var attr in defImplementationAttributes)
 				{
-					var defaultImplementation = attr as DefaultImplementationAttribute;
-					if (defaultImplementation != null)
-						registerDefaultImplementationAttribute(implementationType, defaultImplementation.InterfaceTypes);
-
-					var pinToAttribute = attr as PinnedToAttribute;
-					if (pinToAttribute != null)
+					switch (attr)
 					{
-						pinTo(implementationType, pinToAttribute.TargetType);
+						case DefaultImplementationAttribute defaultImplementation:
+							registerDefaultImplementationAttribute(implementationType, defaultImplementation.InterfaceTypes);
+							break;
+						case PinnedToAttribute pinToAttribute:
+							pinTo(implementationType, pinToAttribute.TargetType);
+							break;
 					}
 				}
 			}
@@ -158,24 +158,21 @@ namespace Konstruktor2
 
 		void pinTo(Type pinnedType, Type targetType)
 		{
-			HashSet<Type> pinnedTypes;
-			if (!_pins.TryGetValue(targetType, out pinnedTypes))
+			if (!_pins.TryGetValue(targetType, out var pinnedTypes))
 				_pins.Add(targetType, pinnedTypes = new HashSet<Type>());
 			pinnedTypes.Add(pinnedType);
 		}
 
 		IEnumerable<Type> IKonstruktor.pinsOf(Type targetType)
 		{
-			HashSet<Type> pinnedTypes;
-			return _pins.TryGetValue(targetType, out pinnedTypes) 
+			return _pins.TryGetValue(targetType, out var pinnedTypes) 
 				? pinnedTypes 
 				: Enumerable.Empty<Type>();
 		}
 
 		bool IKonstruktor.isPinnedTo(Type t, Type targetType)
 		{
-			HashSet<Type> pins;
-			return _pins.TryGetValue(targetType, out pins) && pins.Contains(t);
+			return _pins.TryGetValue(targetType, out var pins) && pins.Contains(t);
 		}
 
 		// http://stackoverflow.com/questions/5318685/get-only-direct-interface-instead-of-all

@@ -19,8 +19,7 @@ namespace Konstruktor2
 
 			Debug.Assert(_frozen);
 #endif
-			Func<ILifetimeScope, object> explicitGenerator;
-			if (_explicitGenerators.TryGetValue(t, out explicitGenerator))
+			if (_explicitGenerators.TryGetValue(t, out var explicitGenerator))
 				return buildByExplicitGenerator(explicitGenerator, lifetimeScope);
 
 			var ti = t.GetTypeInfo();
@@ -67,8 +66,7 @@ namespace Konstruktor2
 
 		Type tryGetImplementationForInterface(Type interfaceType)
 		{
-			Type rType;
-			_interfaceToImplementation.TryGetValue(interfaceType, out rType);
+			_interfaceToImplementation.TryGetValue(interfaceType, out var rType);
 
 			return rType;
 		}
@@ -104,8 +102,7 @@ namespace Konstruktor2
 		{
 			var interfaceTypeDefInfo = interfaceTypeDef.GetTypeInfo();
 			Debug.Assert(interfaceTypeDefInfo.IsGenericTypeDefinition);
-			MethodInfo method;
-			_generatorMethods.TryGetValue(interfaceTypeDef, out method);
+			_generatorMethods.TryGetValue(interfaceTypeDef, out var method);
 			return method;
 		}
 

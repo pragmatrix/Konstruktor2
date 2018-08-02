@@ -69,8 +69,7 @@ namespace Konstruktor2
 
 		bool isPreferredConstructor(ConstructorInfo constructorInfo)
 		{
-			Type[] preferred;
-			if (_preferredConstructor.TryGetValue(constructorInfo.DeclaringType, out preferred)
+			if (_preferredConstructor.TryGetValue(constructorInfo.DeclaringType, out var preferred)
 				&& compareTypes(preferred, constructorInfo.GetParameters()))
 				return true;
 

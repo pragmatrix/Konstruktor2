@@ -9,7 +9,7 @@ namespace Konstruktor2.Detail
 		Type _root_;
 		readonly ILifetimeScope _parent_;
 		readonly IKonstruktor _konstruktor;
-		public uint Level { get; private set; }
+		public uint Level { get; }
 
 		readonly Dictionary<Type, object> _instances = new Dictionary<Type, object>();
 		readonly IList<IDisposable> _objectsToDispose = new List<IDisposable>();
@@ -88,8 +88,7 @@ namespace Konstruktor2.Detail
 		{
 			lock (_)
 			{
-				object instance_;
-				if (internalTryResolveExisting(type, out instance_))
+				if (internalTryResolveExisting(type, out var instance_))
 					return instance_;
 
 				var newInstance = _konstruktor.build(this, type);
@@ -126,8 +125,7 @@ namespace Konstruktor2.Detail
 
 		void internalOwn(object instance)
 		{
-			var disp = instance as IDisposable;
-			if (disp != null)
+			if (instance is IDisposable disp)
 				_objectsToDispose.Add(disp);
 		}
 

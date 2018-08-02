@@ -10,8 +10,7 @@ namespace Konstruktor2.Detail
 
 		public DisposeChain(IDisposeChain parent_)
 		{
-			if (parent_ != null)
-				parent_.add(this);
+			parent_?.add(this);
 		}
 
 		public void Dispose()
