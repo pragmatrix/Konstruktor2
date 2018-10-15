@@ -33,7 +33,7 @@ namespace Konstruktor2.Tests
 			}
 		}
 
-		[Test, ExpectedException(typeof(ResolveException))]
+		[Test]
 		public void testImplementationSecondaryUnregistered()
 		{
 			var builder = new Konstruktor();
@@ -42,8 +42,7 @@ namespace Konstruktor2.Tests
 			using (var scope = builder.beginScope())
 			{
 				var dummy = scope.resolve<IDummy>();
-				var dummy2 = scope.resolve<ISecondary>();
-				Assert.True(ReferenceEquals(dummy, dummy2));
+				Assert.That(() => scope.resolve<ISecondary>(), Throws.TypeOf<ResolveException>());
 			}
 		}
 

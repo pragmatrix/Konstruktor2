@@ -5,7 +5,6 @@ namespace Konstruktor2
 	public sealed class Owned<T> : IDisposable
 	{
 		readonly IDisposable _owner;
-		readonly T _value;
 
 		public Owned(ILifetimeScope owner, T value)
 			: this((IDisposable)owner, value)
@@ -15,13 +14,10 @@ namespace Konstruktor2
 		internal Owned(IDisposable owner, T value)
 		{
 			_owner = owner;
-			_value = value;
+			Value = value;
 		}
 
-		public T Value
-		{
-			get { return _value; }
-		}
+		public T Value { get; }
 
 		public void Dispose()
 		{

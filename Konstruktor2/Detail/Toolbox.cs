@@ -34,7 +34,7 @@ namespace Konstruktor2.Detail
 			Implementation(obj, msg);
 		}
 
-		public static Action<object, string> Implementation = 
+		static readonly Action<object, string> Implementation = 
 			(obj, msg) => System.Diagnostics.Debug.WriteLine(obj.ToString() + ": " + msg);
 	}
 
@@ -51,8 +51,8 @@ namespace Konstruktor2.Detail
 	{
 		public static IEnumerable<int> indices(this Array a)
 		{
-			int l = a.Length;
-			for (int i = 0; i != l; ++i)
+			var l = a.Length;
+			for (var i = 0; i != l; ++i)
 				yield return i;
 		}
 	}
@@ -63,20 +63,12 @@ namespace Konstruktor2.Detail
 	{
 		public static void raise(this Action action)
 		{
-			if (action != null)
-				action();
+			action?.Invoke();
 		}
 
 		public static void raise<T1>(this Action<T1> action, T1 value1)
 		{
-			if (action != null)
-				action(value1);
-		}
-
-		public static void raise<T1, T2>(this Action<T1, T2> action, T1 value1, T2 value2)
-		{
-			if (action != null)
-				action(value1, value2);
+			action?.Invoke(value1);
 		}
 	}
 
@@ -92,20 +84,7 @@ namespace Konstruktor2.Detail
 
 		public void Dispose()
 		{
-			if (_action_ != null)
-				_action_();
-		}
-
-		// that should be faster than an empty DisposeAction 
-		// (because boxing to IDisposable would always create a new instance).
-
-		public static readonly IDisposable None = new DummyDisposable();
-
-		sealed class DummyDisposable : IDisposable
-		{
-			public void Dispose()
-			{
-			}
+			_action_?.Invoke();
 		}
 	}
 }

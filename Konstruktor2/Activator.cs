@@ -20,15 +20,9 @@ namespace Konstruktor2
 			}
 		}
 
-		public ResultT Instance_
-		{
-			get { return IsActive ? _generated_.Value : null; }
-		}
+		public ResultT Instance_ => IsActive ? _generated_.Value : null;
 
-		public bool IsActive
-		{
-			get { return _generated_ != null; }
-		}
+		public bool IsActive => _generated_ != null;
 
 		public Activator(Func<ParamT, Owned<ResultT>> generator)
 		{

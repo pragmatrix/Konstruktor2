@@ -22,14 +22,14 @@ namespace Konstruktor2.Tests
 			}
 		}
 
-		[Test, ExpectedException(typeof(ResolveException))]
+		[Test]
 		public void ambiguous()
 		{
 			var b = new Konstruktor();
 
 			using (var s = b.beginScope())
 			{
-				s.resolve<Ambiguous>();
+				Assert.That(() => s.resolve<Ambiguous>(), Throws.TypeOf<ResolveException>());
 			}
 		}
 
@@ -40,14 +40,14 @@ namespace Konstruktor2.Tests
 			}
 		}
 
-		[Test, ExpectedException(typeof(ResolveException))]
+		[Test]
 		public void internalConstructor()
 		{
 			var b = new Konstruktor();
 
 			using (var s = b.beginScope())
 			{
-				s.resolve<InternalConstructor>();
+				Assert.That(() => s.resolve<InternalConstructor>(), Throws.TypeOf<ResolveException>());
 			}
 		}
 

@@ -52,19 +52,23 @@ namespace Konstruktor2
 #if DEBUG
 			Debug.Assert(!_frozen);
 #endif
-			if (!interfaceType.IsInterface)
-				throw new ArgumentException("must be an interface", "interfaceType");
 
-			if (implementationType.IsInterface)
-				throw new ArgumentException("must be an implementation type", "implementationType");
+			var interfaceTypeInfo = interfaceType.GetTypeInfo();
+			var implementationTypeInfo = implementationType.GetTypeInfo();
 
-			if (interfaceType.IsGenericTypeDefinition != implementationType.IsGenericTypeDefinition)
+			if (!interfaceTypeInfo.IsInterface)
+				throw new ArgumentException("must be an interface", nameof(interfaceType));
+
+			if (implementationTypeInfo.IsInterface)
+				throw new ArgumentException("must be an implementation type", nameof(implementationType));
+
+			if (interfaceTypeInfo.IsGenericTypeDefinition != implementationTypeInfo.IsGenericTypeDefinition)
 				throw new ArgumentException("none or both must be open generic types", "interfaceType, implementationType");
 
-			if (interfaceType.IsGenericTypeDefinition && interfaceType.GetGenericArguments().Length != implementationType.GetGenericArguments().Length)
+			if (interfaceTypeInfo.IsGenericTypeDefinition && interfaceTypeInfo.GetGenericArguments().Length != implementationTypeInfo.GetGenericArguments().Length)
 				throw new ArgumentException("number of generic arguments do not match", "interfaceType, implementationType");
 
-			if (!interfaceType.IsGenericTypeDefinition && !interfaceType.IsAssignableFrom(implementationType))
+			if (!interfaceTypeInfo.IsGenericTypeDefinition && !interfaceTypeInfo.IsAssignableFrom(implementationType))
 				throw new ArgumentException("interface is not implemented by the implementation", "interfaceType, implementationType");
 
 			if (_interfaceToImplementation.ContainsKey(interfaceType))
@@ -88,13 +92,15 @@ namespace Konstruktor2
 #if DEBUG
 			Debug.Assert(!_frozen);
 #endif
-			var methods = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+			var typeInfo = type.GetTypeInfo();
+			var methods = typeInfo.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 			var factoryMethods = from m in methods where m.hasAttribute<GeneratorMethodAttribute>() select m;
 
 			foreach (var fm in factoryMethods)
 			{
 				var returnType = fm.ReturnType;
-				var typeDefinition = returnType.IsGenericType ? returnType.GetGenericTypeDefinition() : returnType;
+				var returnTypeInfo = returnType.GetTypeInfo();
+				var typeDefinition = returnTypeInfo.IsGenericType ? returnType.GetGenericTypeDefinition() : returnType;
 				_generatorMethods.Add(typeDefinition, fm);
 			}
 		}
@@ -108,17 +114,19 @@ namespace Konstruktor2
 		{
 			foreach (var implementationType in assembly.GetTypes())
 			{
-				var defImplementationAttributes = implementationType.GetCustomAttributes(false);
+				var implementationTypeInfo = implementationType.GetTypeInfo();
+
+				var defImplementationAttributes = implementationTypeInfo.GetCustomAttributes(false);
 				foreach (var attr in defImplementationAttributes)
 				{
-					var defaultImplementation = attr as DefaultImplementationAttribute;
-					if (defaultImplementation != null)
-						registerDefaultImplementationAttribute(implementationType, defaultImplementation.InterfaceTypes);
-
-					var pinToAttribute = attr as PinnedToAttribute;
-					if (pinToAttribute != null)
+					switch (attr)
 					{
-						pinTo(implementationType, pinToAttribute.TargetType);
+						case DefaultImplementationAttribute defaultImplementation:
+							registerDefaultImplementationAttribute(implementationType, defaultImplementation.InterfaceTypes);
+							break;
+						case PinnedToAttribute pinToAttribute:
+							pinTo(implementationType, pinToAttribute.TargetType);
+							break;
 					}
 				}
 			}
@@ -134,7 +142,8 @@ namespace Konstruktor2
 
 			foreach (var interfaceType in interfaces)
 			{
-				Debug.Assert(interfaceType.IsAssignableFrom(implementationType));
+				var interfaceTypeInfo = interfaceType.GetTypeInfo();
+				Debug.Assert(interfaceTypeInfo.IsAssignableFrom(implementationType));
 				mapInterfaceToImplementation(interfaceType, implementationType);
 			}
 		}
@@ -149,34 +158,32 @@ namespace Konstruktor2
 
 		void pinTo(Type pinnedType, Type targetType)
 		{
-			HashSet<Type> pinnedTypes;
-			if (!_pins.TryGetValue(targetType, out pinnedTypes))
+			if (!_pins.TryGetValue(targetType, out var pinnedTypes))
 				_pins.Add(targetType, pinnedTypes = new HashSet<Type>());
 			pinnedTypes.Add(pinnedType);
 		}
 
 		IEnumerable<Type> IKonstruktor.pinsOf(Type targetType)
 		{
-			HashSet<Type> pinnedTypes;
-			return _pins.TryGetValue(targetType, out pinnedTypes) 
+			return _pins.TryGetValue(targetType, out var pinnedTypes) 
 				? pinnedTypes 
 				: Enumerable.Empty<Type>();
 		}
 
 		bool IKonstruktor.isPinnedTo(Type t, Type targetType)
 		{
-			HashSet<Type> pins;
-			return _pins.TryGetValue(targetType, out pins) && pins.Contains(t);
+			return _pins.TryGetValue(targetType, out var pins) && pins.Contains(t);
 		}
 
 		// http://stackoverflow.com/questions/5318685/get-only-direct-interface-instead-of-all
 
 		static IEnumerable<Type> getImmediateInterfaces(Type implementationType)
 		{
-			var allInterfaces = implementationType.GetInterfaces();
+			var implementationTypeInfo = implementationType.GetTypeInfo();
+			var allInterfaces = implementationTypeInfo.GetInterfaces();
 			return
 				allInterfaces.Except
-					(allInterfaces.SelectMany(t => t.GetInterfaces()));
+					(allInterfaces.SelectMany(t => t.GetTypeInfo().GetInterfaces()));
 		}
 
 		public ILifetimeScope beginScope()

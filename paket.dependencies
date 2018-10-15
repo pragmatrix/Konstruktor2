@@ -1,0 +1,6 @@
+source https://www.nuget.org/api/v2/
+
+version: 5.176.1
+frameworks: net462,netstandard1.6
+
+nuget NUnit

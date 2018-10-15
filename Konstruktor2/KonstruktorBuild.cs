@@ -19,11 +19,11 @@ namespace Konstruktor2
 
 			Debug.Assert(_frozen);
 #endif
-			Func<ILifetimeScope, object> explicitGenerator;
-			if (_explicitGenerators.TryGetValue(t, out explicitGenerator))
+			if (_explicitGenerators.TryGetValue(t, out var explicitGenerator))
 				return buildByExplicitGenerator(explicitGenerator, lifetimeScope);
 
-			return t.IsInterface ? buildFromInterface(lifetimeScope, t) : instantiate(lifetimeScope, t);
+			var ti = t.GetTypeInfo();
+			return ti.IsInterface ? buildFromInterface(lifetimeScope, t) : instantiate(lifetimeScope, t);
 		}
 
 		static object buildByExplicitGenerator(Func<ILifetimeScope, object> explicitGenerator, ILifetimeScope lifetimeScope)
@@ -35,12 +35,13 @@ namespace Konstruktor2
 
 		object buildFromInterface(ILifetimeScope lifetimeScope, Type t)
 		{
-			Debug.Assert(t.IsInterface);
+			var ti = t.GetTypeInfo();
+			Debug.Assert(ti.IsInterface);
 			var implementation = tryGetImplementationForInterface(t);
 			if (implementation != null)
 				return lifetimeScope.resolve(implementation);
 
-			if (t.IsGenericType)
+			if (ti.IsGenericType)
 				return buildFromGenericInterface(lifetimeScope, t);
 
 			throw new ResolveException("failed to resolve type {0}: failed to resolve interface", t);
@@ -48,30 +49,32 @@ namespace Konstruktor2
 
 		object buildFromGenericInterface(ILifetimeScope lifetimeScope, Type genericInterface)
 		{
-			Debug.Assert(genericInterface.IsInterface && genericInterface.IsGenericType && !genericInterface.IsGenericTypeDefinition);
+			var genericInterfaceTI = genericInterface.GetTypeInfo();
+			Debug.Assert(genericInterfaceTI.IsInterface && genericInterfaceTI.IsGenericType && !genericInterfaceTI.IsGenericTypeDefinition);
 			var def = genericInterface.GetGenericTypeDefinition();
 			var implementation = tryGetImplementationForInterface(def);
 			if (implementation == null)
 				return buildFromGenericByUsingAGenerator(lifetimeScope, genericInterface);
 
-			Debug.Assert(implementation.GetGenericArguments().Length == genericInterface.GetGenericArguments().Length);
+			var implementationTI = implementation.GetTypeInfo();
+			Debug.Assert(implementationTI.GetGenericArguments().Length == genericInterfaceTI.GetGenericArguments().Length);
 
-			var implementationType = implementation.MakeGenericType(genericInterface.GetGenericArguments());
+			var implementationType = implementation.MakeGenericType(genericInterfaceTI.GetGenericArguments());
 
 			return lifetimeScope.resolve(implementationType);
 		}
 
 		Type tryGetImplementationForInterface(Type interfaceType)
 		{
-			Type rType;
-			_interfaceToImplementation.TryGetValue(interfaceType, out rType);
+			_interfaceToImplementation.TryGetValue(interfaceType, out var rType);
 
 			return rType;
 		}
 
 		object buildFromGenericByUsingAGenerator(ILifetimeScope lifetimeScope, Type genericInterface)
 		{
-			Debug.Assert(genericInterface.IsInterface && genericInterface.IsGenericType && !genericInterface.IsGenericTypeDefinition);
+			var genericInterfaceTypeInfo = genericInterface.GetTypeInfo();
+			Debug.Assert(genericInterfaceTypeInfo.IsInterface && genericInterfaceTypeInfo.IsGenericType && !genericInterfaceTypeInfo.IsGenericTypeDefinition);
 			var def = genericInterface.GetGenericTypeDefinition();
 
 			var factoryMethod = tryResolveFactoryMethod(def);
@@ -79,7 +82,7 @@ namespace Konstruktor2
 			if (factoryMethod == null)
 				throw new ResolveException("failed to resolve generic type {0}: failed to resolve interface", genericInterface);
 
-			var arguments = genericInterface.GetGenericArguments();
+			var arguments = genericInterfaceTypeInfo.GetGenericArguments();
 			var methodTypeArguments = factoryMethod.GetGenericArguments();
 			if (arguments.Length != methodTypeArguments.Length)
 				throw new ResolveException("failed to find generators method for type {0}, number of type arguments are not matching", genericInterface);
@@ -97,9 +100,9 @@ namespace Konstruktor2
 
 		MethodInfo tryResolveFactoryMethod(Type interfaceTypeDef)
 		{
-			Debug.Assert(interfaceTypeDef.IsGenericTypeDefinition);
-			MethodInfo method;
-			_generatorMethods.TryGetValue(interfaceTypeDef, out method);
+			var interfaceTypeDefInfo = interfaceTypeDef.GetTypeInfo();
+			Debug.Assert(interfaceTypeDefInfo.IsGenericTypeDefinition);
+			_generatorMethods.TryGetValue(interfaceTypeDef, out var method);
 			return method;
 		}
 

@@ -1,11 +1,16 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{C1E33526-9B15-4F68-A17C-142F9B382383}"
+	ProjectSection(SolutionItems) = preProject
+		paket.dependencies = paket.dependencies
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konstruktor2", "Konstruktor2\Konstruktor2.csproj", "{680D590A-F8D3-413D-884C-0C4D8136F8D9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konstruktor2.Tests", "Konstruktor2.Tests\Konstruktor2.Tests.csproj", "{3EF3D4D2-2667-413A-84F6-1B8E65DC1CD6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konstruktor2.Portable", "Konstruktor2\Konstruktor2.Portable.csproj", "{6063C0AE-4F31-4344-8222-BBE0A0D3D3C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,12 +26,11 @@ Global
 		{3EF3D4D2-2667-413A-84F6-1B8E65DC1CD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EF3D4D2-2667-413A-84F6-1B8E65DC1CD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EF3D4D2-2667-413A-84F6-1B8E65DC1CD6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6063C0AE-4F31-4344-8222-BBE0A0D3D3C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6063C0AE-4F31-4344-8222-BBE0A0D3D3C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6063C0AE-4F31-4344-8222-BBE0A0D3D3C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6063C0AE-4F31-4344-8222-BBE0A0D3D3C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E69D7A70-F270-4D7A-81E3-88D1BA5BA9FB}
 	EndGlobalSection
 EndGlobal

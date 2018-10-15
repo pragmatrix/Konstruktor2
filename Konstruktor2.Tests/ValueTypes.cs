@@ -22,25 +22,25 @@ namespace Konstruktor2.Tests
 			}
 		}
 
-		[Test, ExpectedException(typeof(ResolveException))]
+		[Test]
 		public void testValueTypes()
 		{
 			var b = new Konstruktor();
 
 			using (var s = b.beginScope())
 			{
-				s.resolve<RefersValueType>();
+				Assert.That(() => s.resolve<RefersValueType>(), Throws.TypeOf<ResolveException>());
 			}
 		}
 
-		[Test, ExpectedException(typeof(ResolveException))]
+		[Test]
 		public void testStringType()
 		{
 			var b = new Konstruktor();
 
 			using (var s = b.beginScope())
 			{
-				s.resolve<RefersString>();
+				Assert.That(() => s.resolve<RefersString>(), Throws.TypeOf<ResolveException>());
 			}
 		}
 	}

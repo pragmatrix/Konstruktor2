@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 using Konstruktor2.Detail;
 
 namespace Konstruktor2
@@ -11,10 +10,11 @@ namespace Konstruktor2
 	{
 		object instantiate(ILifetimeScope lifetimeScope, Type t)
 		{
-			if (t.IsValueType || Type.GetTypeCode(t) == TypeCode.String)
+			var ti = t.GetTypeInfo();
+			if (ti.IsValueType || Type.GetTypeCode(t) == TypeCode.String)
 				throw new ResolveException("failed to instantiate type {0}: no reference or string type", t);
 
-			if (t.IsGenericType)
+			if (ti.IsGenericType)
 			{
 				var typeDef = t.GetGenericTypeDefinition();
 				if (typeDef == typeof(Func<>))
@@ -30,7 +30,8 @@ namespace Konstruktor2
 
 		object instantiateByReflectionConstructor(ILifetimeScope lifetimeScope, Type t)
 		{
-			var constructors = t.GetConstructors();
+			var ti = t.GetTypeInfo();
+			var constructors = ti.GetConstructors();
 			if (constructors.Length == 0)
 				throw new ResolveException("failed to instantiate type {0}: no public constructor", t);
 
@@ -68,8 +69,7 @@ namespace Konstruktor2
 
 		bool isPreferredConstructor(ConstructorInfo constructorInfo)
 		{
-			Type[] preferred;
-			if (_preferredConstructor.TryGetValue(constructorInfo.DeclaringType, out preferred)
+			if (_preferredConstructor.TryGetValue(constructorInfo.DeclaringType, out var preferred)
 				&& compareTypes(preferred, constructorInfo.GetParameters()))
 				return true;
 
